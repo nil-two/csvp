@@ -43,7 +43,7 @@ func TestParseIndexesList(t *testing.T) {
 				test.list, err)
 		}
 		if !reflect.DeepEqual(actual, expect) {
-			t.Error("parseIndexesList(%q) = %v, want %v",
+			t.Errorf("parseIndexesList(%q) = %v, want %v",
 				test.list, actual, expect)
 		}
 	}
