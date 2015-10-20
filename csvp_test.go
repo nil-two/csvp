@@ -18,6 +18,20 @@ var parseIndexesListTests = []struct {
 		list:    "120",
 		indexes: []int{120},
 	},
+
+	// Multiple indexes
+	{
+		list:    "10,120",
+		indexes: []int{10, 120},
+	},
+	{
+		list:    "10,120,50",
+		indexes: []int{10, 120, 50},
+	},
+	{
+		list:    "3,2,1,0",
+		indexes: []int{3, 2, 1, 0},
+	},
 }
 
 func TestParseIndexesList(t *testing.T) {
