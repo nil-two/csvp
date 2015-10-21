@@ -55,7 +55,7 @@ func (h *Headers) ParseHeader(headers []string) error {
 	indexMap := make(map[string]int)
 	for i, header := range headers {
 		if _, ok := indexMap[header]; ok {
-			return fmt.Errorf("%q: duplicated header")
+			return fmt.Errorf("%q: duplicated header", header)
 		}
 		indexMap[header] = i
 	}
