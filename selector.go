@@ -92,7 +92,7 @@ func parseIndexesList(list string) ([]int, error) {
 		if err != nil {
 			return nil, err
 		}
-		indexes[i] = index
+		indexes[i] = index - 1
 	}
 	return indexes, nil
 }
