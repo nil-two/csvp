@@ -24,6 +24,14 @@ func parseIndexesList(list string) ([]int, error) {
 	return nums, nil
 }
 
+func parseHeadersList(list string) ([]string, error) {
+	fields := FIELD.FindAllString(list, -1)
+	for i := 0; i < len(fields); i++ {
+		fields[i] = strings.Replace(fields[i], `\,`, `,`, -1)
+	}
+	return fields, nil
+}
+
 type CSVScanner struct {
 	indexes []int
 	text    string
