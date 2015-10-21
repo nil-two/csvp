@@ -81,6 +81,7 @@ func (c *CSVScanner) Scan() bool {
 			c.text = ""
 			return false
 		}
+		c.parsedHeaders = true
 		return c.Scan()
 	}
 
