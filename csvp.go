@@ -3,34 +3,8 @@ package main
 import (
 	"encoding/csv"
 	"io"
-	"regexp"
-	"strconv"
 	"strings"
 )
-
-var FIELD = regexp.MustCompile(`(?:[^,\\]|\\.)*`)
-
-func parseIndexesList(list string) ([]int, error) {
-	fields := FIELD.FindAllString(list, -1)
-
-	nums := make([]int, len(fields))
-	for i, field := range fields {
-		num, err := strconv.Atoi(field)
-		if err != nil {
-			return nil, err
-		}
-		nums[i] = num
-	}
-	return nums, nil
-}
-
-func parseHeadersList(list string) ([]string, error) {
-	fields := FIELD.FindAllString(list, -1)
-	for i := 0; i < len(fields); i++ {
-		fields[i] = strings.Replace(fields[i], `\,`, `,`, -1)
-	}
-	return fields, nil
-}
 
 type CSVScanner struct {
 	text          string

@@ -2,6 +2,9 @@ package main
 
 import (
 	"fmt"
+	"regexp"
+	"strconv"
+	"strings"
 )
 
 type Selector interface {
@@ -77,4 +80,27 @@ func (h *Headers) Select(recode []string) ([]string, error) {
 		values = append(values, recode[index])
 	}
 	return values, nil
+}
+
+var FIELD = regexp.MustCompile(`(?:[^,\\]|\\.)*`)
+
+func parseIndexesList(list string) ([]int, error) {
+	fields := FIELD.FindAllString(list, -1)
+	indexes := make([]int, len(fields))
+	for i, field := range fields {
+		index, err := strconv.Atoi(field)
+		if err != nil {
+			return nil, err
+		}
+		indexes[i] = index
+	}
+	return indexes, nil
+}
+
+func parseHeadersList(list string) ([]string, error) {
+	fields := FIELD.FindAllString(list, -1)
+	for i := 0; i < len(fields); i++ {
+		fields[i] = strings.Replace(fields[i], `\,`, `,`, -1)
+	}
+	return fields, nil
 }
