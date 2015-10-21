@@ -8,8 +8,8 @@ import (
 )
 
 type Selector interface {
-	RequireHeader() bool
-	ParseHeader(header []string) error
+	RequireHeaders() bool
+	ParseHeaders(headers []string) error
 	Select(recode []string) ([]string, error)
 }
 
@@ -23,22 +23,22 @@ func NewIndexes(indexes []int) *Indexes {
 	}
 }
 
-func (i *Indexes) RequireHeader() bool {
+func (i *Indexes) RequireHeaders() bool {
 	return false
 }
 
-func (i *Indexes) ParseHeader(header []string) error {
+func (i *Indexes) ParseHeaders(headers []string) error {
 	return nil
 }
 
 func (i *Indexes) Select(recode []string) ([]string, error) {
-	values := make([]string, len(i.indexes))
+	a := make([]string, len(i.indexes))
 	for j, index := range i.indexes {
 		if index >= 0 || index < len(recode) {
-			values[j] = recode[index]
+			a[j] = recode[index]
 		}
 	}
-	return values, nil
+	return a, nil
 }
 
 type Headers struct {
@@ -52,11 +52,11 @@ func NewHeaders(headers []string) *Headers {
 	}
 }
 
-func (h *Headers) RequireHeader() bool {
+func (h *Headers) RequireHeaders() bool {
 	return true
 }
 
-func (h *Headers) ParseHeader(headers []string) error {
+func (h *Headers) ParseHeaders(headers []string) error {
 	indexMap := make(map[string]int)
 	for i, header := range headers {
 		if _, ok := indexMap[header]; ok {
@@ -77,13 +77,13 @@ func (h *Headers) ParseHeader(headers []string) error {
 }
 
 func (h *Headers) Select(recode []string) ([]string, error) {
-	values := make([]string, len(h.indexes))
+	a := make([]string, len(h.indexes))
 	for i, index := range h.indexes {
 		if index != -1 {
-			values[i] = recode[index]
+			a[i] = recode[index]
 		}
 	}
-	return values, nil
+	return a, nil
 }
 
 var FIELD = regexp.MustCompile(`(?:[^,\\]|\\.)*`)
