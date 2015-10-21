@@ -33,16 +33,17 @@ func parseHeadersList(list string) ([]string, error) {
 }
 
 type CSVScanner struct {
-	indexes []int
-	text    string
-	err     error
-	reader  *csv.Reader
+	text          string
+	err           error
+	parsedHeaders bool
+	selector      Selector
+	reader        *csv.Reader
 }
 
-func NewCSVScanner(indexes []int, r io.Reader) *CSVScanner {
+func NewCSVScanner(s Selector, r io.Reader) *CSVScanner {
 	return &CSVScanner{
-		indexes: indexes,
-		reader:  csv.NewReader(r),
+		selector: s,
+		reader:   csv.NewReader(r),
 	}
 }
 
@@ -73,9 +74,21 @@ func (c *CSVScanner) Scan() bool {
 		return false
 	}
 
-	var values []string
-	for _, index := range c.indexes {
-		values = append(values, recode[index])
+	if !c.parsedHeaders && c.selector.RequireHeader() {
+		err = c.selector.ParseHeader(recode)
+		if err != nil {
+			c.err = err
+			c.text = ""
+			return false
+		}
+		return c.Scan()
+	}
+
+	values, err := c.selector.Select(recode)
+	if err != nil {
+		c.err = err
+		c.text = ""
+		return false
 	}
 	c.text = strings.Join(values, "\t")
 

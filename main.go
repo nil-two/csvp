@@ -15,6 +15,7 @@ Print selected parts of CSV from each FILE to standard output.
 
 Options:
   -i, --indexes=LIST       select only these indexes
+  -h, --headers=LIST       select only these headers
       --help               display this help text and exit
       --version            display version information and exit
 `[1:])
@@ -27,10 +28,11 @@ v0.1.0
 }
 
 type Option struct {
-	List      string `short:"i" long:"indexes"`
-	IsHelp    bool   `          long:"help"`
-	IsVersion bool   `          long:"version"`
-	Files     []string
+	IndexesList string `short:"i" long:"indexes"`
+	HeadersList string `short:"h" long:"headers"`
+	IsHelp      bool   `          long:"help"`
+	IsVersion   bool   `          long:"version"`
+	Files       []string
 }
 
 func parseOption(args []string) (opt *Option, err error) {
@@ -45,15 +47,30 @@ func parseOption(args []string) (opt *Option, err error) {
 }
 
 func newCSVScannerFromOption(opt *Option) (c *CSVScanner, err error) {
-	indexes, err := parseIndexesList(opt.List)
-	if err != nil {
-		return nil, err
+	var selector Selector
+	switch {
+	case opt.IndexesList == "" && opt.HeadersList == "":
+		return nil, fmt.Errorf("you must specify a list of indexes or headers")
+	case opt.IndexesList != "" && opt.HeadersList != "":
+		return nil, fmt.Errorf("only one type of list may be specified")
+	case opt.IndexesList != "":
+		indexes, err := parseIndexesList(opt.IndexesList)
+		if err != nil {
+			return nil, err
+		}
+		selector = NewIndexes(indexes)
+	case opt.HeadersList != "":
+		headers, err := parseHeadersList(opt.HeadersList)
+		if err != nil {
+			return nil, err
+		}
+		selector = NewHeaders(headers)
 	}
 	reader, err := argf.From(opt.Files)
 	if err != nil {
 		return nil, err
 	}
-	return NewCSVScanner(indexes, reader), nil
+	return NewCSVScanner(selector, reader), nil
 }
 
 func do(c *CSVScanner) error {
