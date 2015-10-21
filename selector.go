@@ -75,9 +75,13 @@ func (h *Headers) ParseHeader(headers []string) error {
 }
 
 func (h *Headers) Select(recode []string) ([]string, error) {
-	var values []string
-	for _, index := range h.indexes {
-		values = append(values, recode[index])
+	values := make([]string, len(h.indexes))
+	for i, index := range h.indexes {
+		if index == -1 {
+			values[i] = ""
+		} else {
+			values[i] = recode[index]
+		}
 	}
 	return values, nil
 }
