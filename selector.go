@@ -34,9 +34,7 @@ func (i *Indexes) ParseHeader(header []string) error {
 func (i *Indexes) Select(recode []string) ([]string, error) {
 	values := make([]string, len(i.indexes))
 	for j, index := range i.indexes {
-		if index < 0 || index > len(recode)-1 {
-			values[j] = ""
-		} else {
+		if index >= 0 || index < len(recode) {
 			values[j] = recode[index]
 		}
 	}
@@ -81,9 +79,7 @@ func (h *Headers) ParseHeader(headers []string) error {
 func (h *Headers) Select(recode []string) ([]string, error) {
 	values := make([]string, len(h.indexes))
 	for i, index := range h.indexes {
-		if index == -1 {
-			values[i] = ""
-		} else {
+		if index != -1 {
 			values[i] = recode[index]
 		}
 	}
