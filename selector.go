@@ -52,7 +52,7 @@ func (h *Headers) RequireHeader() bool {
 }
 
 func (h *Headers) ParseHeader(headers []string) error {
-	var indexMap map[string]int
+	indexMap := make(map[string]int)
 	for i, header := range headers {
 		if _, ok := indexMap[header]; ok {
 			return fmt.Errorf("%q: duplicated header")
