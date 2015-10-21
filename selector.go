@@ -32,9 +32,13 @@ func (i *Indexes) ParseHeader(header []string) error {
 }
 
 func (i *Indexes) Select(recode []string) ([]string, error) {
-	var values []string
-	for _, index := range i.indexes {
-		values = append(values, recode[index])
+	values := make([]string, len(i.indexes))
+	for j, index := range i.indexes {
+		if index < 0 || index > len(recode)-1 {
+			values[j] = ""
+		} else {
+			values[j] = recode[index]
+		}
 	}
 	return values, nil
 }
