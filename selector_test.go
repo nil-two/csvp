@@ -12,25 +12,25 @@ var parseIndexesListTests = []struct {
 	// Only one index
 	{
 		list:    "10",
-		indexes: []int{10},
+		indexes: []int{9},
 	},
 	{
 		list:    "120",
-		indexes: []int{120},
+		indexes: []int{119},
 	},
 
 	// Multiple indexes
 	{
 		list:    "10,120",
-		indexes: []int{10, 120},
+		indexes: []int{9, 119},
 	},
 	{
 		list:    "10,120,50",
-		indexes: []int{10, 120, 50},
+		indexes: []int{9, 119, 49},
 	},
 	{
 		list:    "3,2,1,0",
-		indexes: []int{3, 2, 1, 0},
+		indexes: []int{2, 1, 0, -1},
 	},
 }
 
