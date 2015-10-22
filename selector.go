@@ -13,6 +13,25 @@ type Selector interface {
 	Select(recode []string) ([]string, error)
 }
 
+type All struct {
+}
+
+func NewAll() *All {
+	return &All{}
+}
+
+func (a *All) RequireHeaders() bool {
+	return false
+}
+
+func (a *All) ParseHeaders(headers []string) error {
+	return nil
+}
+
+func (a *All) Select(recode []string) ([]string, error) {
+	return recode, nil
+}
+
 type Indexes struct {
 	indexes []int
 }
