@@ -8,7 +8,7 @@ import (
 )
 
 type Selector interface {
-	RequireHeaders() bool
+	DropHeaders() bool
 	ParseHeaders(headers []string) error
 	Select(recode []string) ([]string, error)
 }
@@ -20,7 +20,7 @@ func NewAll() *All {
 	return &All{}
 }
 
-func (a *All) RequireHeaders() bool {
+func (a *All) DropHeaders() bool {
 	return false
 }
 
@@ -42,7 +42,7 @@ func NewIndexes(indexes []int) *Indexes {
 	}
 }
 
-func (i *Indexes) RequireHeaders() bool {
+func (i *Indexes) DropHeaders() bool {
 	return false
 }
 
@@ -71,7 +71,7 @@ func NewHeaders(headers []string) *Headers {
 	}
 }
 
-func (h *Headers) RequireHeaders() bool {
+func (h *Headers) DropHeaders() bool {
 	return true
 }
 
