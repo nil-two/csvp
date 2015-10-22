@@ -50,7 +50,7 @@ func (c *CSVScanner) Scan() bool {
 		return false
 	}
 
-	if !c.parsedHeaders && c.selector.DropHeaders() {
+	if !c.parsedHeaders {
 		err = c.selector.ParseHeaders(recode)
 		if err != nil {
 			c.err = err
@@ -58,7 +58,10 @@ func (c *CSVScanner) Scan() bool {
 			return false
 		}
 		c.parsedHeaders = true
-		return c.Scan()
+
+		if c.selector.DropHeaders() {
+			return c.Scan()
+		}
 	}
 
 	values, err := c.selector.Select(recode)
