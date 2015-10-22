@@ -10,7 +10,7 @@ import (
 
 func usage() {
 	os.Stderr.WriteString(`
-Usage: cspv OPTION... [FILE]...
+Usage: csvp [OPTION]... [FILE]...
 Print selected parts of CSV from each FILE to standard output.
 
 Options:
