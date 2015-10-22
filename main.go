@@ -16,6 +16,7 @@ Print selected parts of CSV from each FILE to standard output.
 Options:
   -i, --indexes=LIST       select only these indexes
   -h, --headers=LIST       select only these headers
+  -d, --delimiter=STRING   use STRING as the output delimiter (default: \t)
       --help               display this help text and exit
       --version            display version information and exit
 `[1:])
@@ -30,6 +31,7 @@ v0.2.0
 type Option struct {
 	IndexesList string `short:"i" long:"indexes"`
 	HeadersList string `short:"h" long:"headers"`
+	Delimiter   string `short:"d" long:"delimiter" default:"\t"`
 	IsHelp      bool   `          long:"help"`
 	IsVersion   bool   `          long:"version"`
 	Files       []string
@@ -70,7 +72,9 @@ func newCSVScannerFromOption(opt *Option) (c *CSVScanner, err error) {
 	if err != nil {
 		return nil, err
 	}
-	return NewCSVScanner(selector, reader), nil
+	c = NewCSVScanner(selector, reader)
+	c.Delimiter = opt.Delimiter
+	return c, nil
 }
 
 func do(c *CSVScanner) error {
