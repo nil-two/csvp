@@ -51,8 +51,6 @@ func parseOption(args []string) (opt *Option, err error) {
 func newCSVScannerFromOption(opt *Option) (c *CSVScanner, err error) {
 	var selector Selector
 	switch {
-	case opt.IndexesList == "" && opt.HeadersList == "":
-		return nil, fmt.Errorf("you must specify a list of indexes or headers")
 	case opt.IndexesList != "" && opt.HeadersList != "":
 		return nil, fmt.Errorf("only one type of list may be specified")
 	case opt.IndexesList != "":
@@ -67,11 +65,15 @@ func newCSVScannerFromOption(opt *Option) (c *CSVScanner, err error) {
 			return nil, err
 		}
 		selector = NewHeaders(headers)
+	default:
+		selector = NewAll()
 	}
+
 	reader, err := argf.From(opt.Files)
 	if err != nil {
 		return nil, err
 	}
+
 	c = NewCSVScanner(selector, reader)
 	c.Delimiter = opt.Delimiter
 	return c, nil
