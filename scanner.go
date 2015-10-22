@@ -7,6 +7,7 @@ import (
 )
 
 type CSVScanner struct {
+	Delimiter     string
 	text          string
 	err           error
 	parsedHeaders bool
@@ -16,8 +17,9 @@ type CSVScanner struct {
 
 func NewCSVScanner(s Selector, r io.Reader) *CSVScanner {
 	return &CSVScanner{
-		selector: s,
-		reader:   csv.NewReader(r),
+		Delimiter: "\t",
+		selector:  s,
+		reader:    csv.NewReader(r),
 	}
 }
 
@@ -65,7 +67,7 @@ func (c *CSVScanner) Scan() bool {
 		c.text = ""
 		return false
 	}
-	c.text = strings.Join(values, "\t")
+	c.text = strings.Join(values, c.Delimiter)
 
 	return true
 }
