@@ -7,6 +7,8 @@ import (
 	"strings"
 )
 
+var FIELD = regexp.MustCompile(`(?:[^,\\]|\\.)*`)
+
 type Selector interface {
 	DropHeaders() bool
 	ParseHeaders(headers []string) error
@@ -36,10 +38,20 @@ type Indexes struct {
 	indexes []int
 }
 
-func NewIndexes(indexes []int) *Indexes {
+func NewIndexes(list string) (*Indexes, error) {
+	fields := FIELD.FindAllString(list, -1)
+
+	indexes := make([]int, len(fields))
+	for i, field := range fields {
+		index, err := strconv.Atoi(field)
+		if err != nil {
+			return nil, err
+		}
+		indexes[i] = index - 1
+	}
 	return &Indexes{
 		indexes: indexes,
-	}
+	}, nil
 }
 
 func (i *Indexes) DropHeaders() bool {
@@ -103,21 +115,6 @@ func (h *Headers) Select(recode []string) ([]string, error) {
 		}
 	}
 	return a, nil
-}
-
-var FIELD = regexp.MustCompile(`(?:[^,\\]|\\.)*`)
-
-func parseIndexesList(list string) ([]int, error) {
-	fields := FIELD.FindAllString(list, -1)
-	indexes := make([]int, len(fields))
-	for i, field := range fields {
-		index, err := strconv.Atoi(field)
-		if err != nil {
-			return nil, err
-		}
-		indexes[i] = index - 1
-	}
-	return indexes, nil
 }
 
 func parseHeadersList(list string) ([]string, error) {
