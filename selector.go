@@ -77,10 +77,14 @@ type Headers struct {
 	headers []string
 }
 
-func NewHeaders(headers []string) *Headers {
+func NewHeaders(list string) (*Headers, error) {
+	headers := FIELD.FindAllString(list, -1)
+	for i := 0; i < len(headers); i++ {
+		headers[i] = strings.Replace(headers[i], `\,`, `,`, -1)
+	}
 	return &Headers{
 		headers: headers,
-	}
+	}, nil
 }
 
 func (h *Headers) DropHeaders() bool {
@@ -115,12 +119,4 @@ func (h *Headers) Select(recode []string) ([]string, error) {
 		}
 	}
 	return a, nil
-}
-
-func parseHeadersList(list string) ([]string, error) {
-	fields := FIELD.FindAllString(list, -1)
-	for i := 0; i < len(fields); i++ {
-		fields[i] = strings.Replace(fields[i], `\,`, `,`, -1)
-	}
-	return fields, nil
 }

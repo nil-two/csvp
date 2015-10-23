@@ -59,11 +59,10 @@ func newCSVScannerFromOption(opt *Option) (c *CSVScanner, err error) {
 			return nil, err
 		}
 	case opt.HeadersList != "":
-		headers, err := parseHeadersList(opt.HeadersList)
+		selector, err = NewHeaders(opt.HeadersList)
 		if err != nil {
 			return nil, err
 		}
-		selector = NewHeaders(headers)
 	default:
 		selector = NewAll()
 	}
