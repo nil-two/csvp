@@ -53,7 +53,7 @@ func (i *Indexes) ParseHeaders(headers []string) error {
 func (i *Indexes) Select(recode []string) ([]string, error) {
 	a := make([]string, len(i.indexes))
 	for j, index := range i.indexes {
-		if index >= 0 || index < len(recode) {
+		if index >= 0 && index < len(recode) {
 			a[j] = recode[index]
 		}
 	}
