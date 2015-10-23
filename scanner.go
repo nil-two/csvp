@@ -64,13 +64,13 @@ func (c *CSVScanner) Scan() bool {
 		}
 	}
 
-	values, err := c.selector.Select(recode)
+	recode, err = c.selector.Select(recode)
 	if err != nil {
 		c.err = err
 		c.text = ""
 		return false
 	}
-	c.text = strings.Join(values, c.Delimiter)
+	c.text = strings.Join(recode, c.Delimiter)
 
 	return true
 }
