@@ -47,6 +47,9 @@ func NewIndexes(list string) (*Indexes, error) {
 		if err != nil {
 			return nil, err
 		}
+		if index < 1 {
+			return nil, fmt.Errorf("indexes are numberd from 1")
+		}
 		indexes[i] = index - 1
 	}
 	return &Indexes{
