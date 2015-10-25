@@ -39,6 +39,11 @@ type Indexes struct {
 }
 
 func NewIndexes(list string) (*Indexes, error) {
+	if list == "" {
+		return &Indexes{
+			indexes: []int{},
+		}, nil
+	}
 	fields := FIELD.FindAllString(list, -1)
 
 	indexes := make([]int, len(fields))
