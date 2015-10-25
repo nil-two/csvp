@@ -40,6 +40,68 @@ func TestSelectAll(t *testing.T) {
 	}
 }
 
+var newIndexesTests = []struct {
+	description string
+	list        string
+	wantErr     bool
+	indexes     []int
+}{
+	{
+		list:    "",
+		indexes: []int{},
+	},
+	{
+		list:    "1",
+		indexes: []int{0},
+	},
+	{
+		list:    "3,1,4",
+		indexes: []int{2, 0, 3},
+	},
+	{
+		list:    "0,5",
+		wantErr: true,
+	},
+	{
+		list:    "-8,5",
+		wantErr: true,
+	},
+	{
+		list:    "foo,5",
+		wantErr: true,
+	},
+	{
+		list:    "1\\,5",
+		wantErr: true,
+	},
+}
+
+func TestNewIndexes(t *testing.T) {
+	for _, test := range newIndexesTests {
+		switch {
+		case test.wantErr:
+			_, err := NewIndexes(test.list)
+			if err == nil {
+				t.Errorf("NewIndexes(%q) returns nil, want err",
+					test.list)
+			}
+		default:
+			i, err := NewIndexes(test.list)
+			if err != nil {
+				t.Errorf("NewIndexes(%q) returns %q, want nil",
+					test.list, err)
+				continue
+			}
+			expect := test.indexes
+			actual := i.indexes
+			if !reflect.DeepEqual(actual, expect) {
+				t.Errorf("NewIndexes(%q) = %v, want %v",
+					test.list, actual, expect)
+			}
+		}
+	}
+}
+
 var selectIndexesTests = []struct {
 	description string
 	list        string
