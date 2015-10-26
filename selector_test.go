@@ -203,3 +203,42 @@ func TestSelectIndexes(t *testing.T) {
 		}
 	}
 }
+
+var newHeadersTests = []struct {
+	list    string
+	headers []string
+}{
+	{
+		list:    "",
+		headers: []string{},
+	},
+	{
+		list:    "name",
+		headers: []string{"name"},
+	},
+	{
+		list:    "name,price,quantity",
+		headers: []string{"name", "price", "quantity"},
+	},
+	{
+		list:    "a\\,b\\,c,d\\,e\\,f",
+		headers: []string{"a,b,c", "d,e,f"},
+	},
+}
+
+func TestNewHeaders(t *testing.T) {
+	for _, test := range newHeadersTests {
+		h, err := NewHeaders(test.list)
+		if err != nil {
+			t.Errorf("NewHeaders(%q) returns %q, want nil",
+				test.list, err)
+			continue
+		}
+		expect := test.headers
+		actual := h.headers
+		if !reflect.DeepEqual(actual, expect) {
+			t.Errorf("NewHeaders(%q) = %v, want %v",
+				test.list, actual, expect)
+		}
+	}
+}
