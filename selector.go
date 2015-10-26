@@ -86,6 +86,12 @@ type Headers struct {
 }
 
 func NewHeaders(list string) (*Headers, error) {
+	if list == "" {
+		return &Headers{
+			headers: []string{},
+		}, nil
+	}
+
 	headers := FIELD.FindAllString(list, -1)
 	for i := 0; i < len(headers); i++ {
 		headers[i] = strings.Replace(headers[i], `\,`, `,`, -1)
