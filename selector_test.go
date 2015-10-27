@@ -242,3 +242,63 @@ func TestNewHeaders(t *testing.T) {
 		}
 	}
 }
+
+var headersParseHeadersTests = []struct {
+	list    string
+	headers []string
+	indexes []int
+}{
+	{
+		list:    "",
+		headers: []string{"name", "price", "quantity"},
+		indexes: []int{},
+	},
+	{
+		list:    "name",
+		headers: []string{"name", "price", "quantity"},
+		indexes: []int{0},
+	},
+	{
+		list:    "price,name",
+		headers: []string{"name", "price", "quantity"},
+		indexes: []int{1, 0},
+	},
+	{
+		list:    "quantity,quantity",
+		headers: []string{"name", "price", "quantity"},
+		indexes: []int{2, 2},
+	},
+	{
+		list:    "date,name",
+		headers: []string{"name", "price", "quantity"},
+		indexes: []int{-1, 0},
+	},
+	{
+		list:    "date,name,name,quantity,per,per",
+		headers: []string{"name", "price", "quantity"},
+		indexes: []int{-1, 0, 0, 2, -1, -1},
+	},
+}
+
+func TestHeadersParseHeaders(t *testing.T) {
+	for _, test := range headersParseHeadersTests {
+		h, err := NewHeaders(test.list)
+		if err != nil {
+			t.Errorf("NewHeaders(%q) returns %q, want nil",
+				test.list, err)
+			continue
+		}
+		if err = h.ParseHeaders(test.headers); err != nil {
+			t.Errorf("%q.ParseHeaders(%q) returns %q, want nil",
+				test.list, test.headers, err)
+			continue
+		}
+
+		expect := test.indexes
+		actual := h.indexes
+		if !reflect.DeepEqual(actual, expect) {
+			t.Errorf("%q.ParseHeaders(%q).indexes = %v, want %v",
+				test.list, test.indexes, actual, expect)
+		}
+	}
+}
