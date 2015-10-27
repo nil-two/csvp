@@ -302,3 +302,139 @@ func TestHeadersParseHeaders(t *testing.T) {
 		}
 	}
 }
+
+var selectHeadersTests = []struct {
+	list    string
+	headers []string
+	src     [][]string
+	dst     [][]string
+}{
+	{
+		list:    "",
+		headers: []string{"name", "price", "quantity"},
+		src: [][]string{
+			{"Apple", "60", "20"},
+			{"Grapes", "140", "8"},
+			{"Pineapple", "400", "2"},
+			{"Orange", "50", "14"},
+		},
+		dst: [][]string{
+			{},
+			{},
+			{},
+			{},
+		},
+	},
+	{
+		list:    "name",
+		headers: []string{"name", "price", "quantity"},
+		src: [][]string{
+			{"Apple", "60", "20"},
+			{"Grapes", "140", "8"},
+			{"Pineapple", "400", "2"},
+			{"Orange", "50", "14"},
+		},
+		dst: [][]string{
+			{"Apple"},
+			{"Grapes"},
+			{"Pineapple"},
+			{"Orange"},
+		},
+	},
+	{
+		list:    "price,name",
+		headers: []string{"name", "price", "quantity"},
+		src: [][]string{
+			{"Apple", "60", "20"},
+			{"Grapes", "140", "8"},
+			{"Pineapple", "400", "2"},
+			{"Orange", "50", "14"},
+		},
+		dst: [][]string{
+			{"60", "Apple"},
+			{"140", "Grapes"},
+			{"400", "Pineapple"},
+			{"50", "Orange"},
+		},
+	},
+	{
+		list:    "quantity,quantity",
+		headers: []string{"name", "price", "quantity"},
+		src: [][]string{
+			{"Apple", "60", "20"},
+			{"Grapes", "140", "8"},
+			{"Pineapple", "400", "2"},
+			{"Orange", "50", "14"},
+		},
+		dst: [][]string{
+			{"20", "20"},
+			{"8", "8"},
+			{"2", "2"},
+			{"14", "14"},
+		},
+	},
+	{
+		list:    "date,name",
+		headers: []string{"name", "price", "quantity"},
+		src: [][]string{
+			{"Apple", "60", "20"},
+			{"Grapes", "140", "8"},
+			{"Pineapple", "400", "2"},
+			{"Orange", "50", "14"},
+		},
+		dst: [][]string{
+			{"", "Apple"},
+			{"", "Grapes"},
+			{"", "Pineapple"},
+			{"", "Orange"},
+		},
+	},
+	{
+		list:    "date,name,name,quantity,per,per",
+		headers: []string{"name", "price", "quantity"},
+		src: [][]string{
+			{"Apple", "60", "20"},
+			{"Grapes", "140", "8"},
+			{"Pineapple", "400", "2"},
+			{"Orange", "50", "14"},
+		},
+		dst: [][]string{
+			{"", "Apple", "Apple", "20", "", ""},
+			{"", "Grapes", "Grapes", "8", "", ""},
+			{"", "Pineapple", "Pineapple", "2", "", ""},
+			{"", "Orange", "Orange", "14", "", ""},
+		},
+	},
+}
+
+func TestSelectHeaders(t *testing.T) {
+	for _, test := range selectHeadersTests {
+		h, err := NewHeaders(test.list)
+		if err != nil {
+			t.Errorf("NewHeaders(%q) returns %q, want nil",
+				test.list, err)
+			continue
+		}
+		if err = h.ParseHeaders(test.headers); err != nil {
+			t.Errorf("%q.ParseHeaders(%q) returns %q, want nil",
+				test.list, test.headers, err)
+			continue
+		}
+		self := fmt.Sprintf("{list=%q, headers=%q}",
+			test.list, test.headers)
+
+		expect := test.dst
+		actual := make([][]string, len(test.src))
+		for i, line := range test.src {
+			actual[i], err = h.Select(line)
+			if err != nil {
+				t.Errorf("%s.Select(%q) returns %q, want nil",
+					self, line, err)
+			}
+		}
+		if !reflect.DeepEqual(actual, expect) {
+			t.Errorf("%s: %q: got %q, want %q",
+				self, test.src, actual, expect)
+		}
+	}
+}
