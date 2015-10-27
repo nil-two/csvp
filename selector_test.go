@@ -16,20 +16,34 @@ func toLines(cells [][]string) string {
 }
 
 var selectAllTests = []struct {
-	src []string
-	dst []string
+	src [][]string
+	dst [][]string
 }{
 	{
-		src: []string{},
-		dst: []string{},
+		src: [][]string{},
+		dst: [][]string{},
 	},
 	{
-		src: []string{"aaa", "bbb", "ccc"},
-		dst: []string{"aaa", "bbb", "ccc"},
+		src: [][]string{
+			{"aaa", "bbb", "ccc"},
+			{"ddd", "eee", "fff"},
+		},
+		dst: [][]string{
+			{"aaa", "bbb", "ccc"},
+			{"ddd", "eee", "fff"},
+		},
 	},
 	{
-		src: []string{"a", "bb", "ccc", "dddd", "eeeee"},
-		dst: []string{"a", "bb", "ccc", "dddd", "eeeee"},
+		src: [][]string{
+			{"a", "bb", "ccc", "dddd", "eeeee"},
+			{"f", "gg", "hhh", "iiii", "jjjjj"},
+			{"k", "ll", "mmm", "nnnn", "kkkkk"},
+		},
+		dst: [][]string{
+			{"a", "bb", "ccc", "dddd", "eeeee"},
+			{"f", "gg", "hhh", "iiii", "jjjjj"},
+			{"k", "ll", "mmm", "nnnn", "kkkkk"},
+		},
 	},
 }
 
@@ -37,14 +51,14 @@ func TestSelectAll(t *testing.T) {
 	a := NewAll()
 	for _, test := range selectAllTests {
 		expect := test.dst
-		actual, err := a.Select(test.src)
-		if err != nil {
-			t.Errorf("All.Select(%q) returns %q, want nil",
-				test.src, err)
+		actual := make([][]string, len(test.src))
+		for i, line := range test.src {
+			actual[i], _ = a.Select(line)
 		}
 		if !reflect.DeepEqual(actual, expect) {
-			t.Errorf("All.Select(%q)\ngot :%q\nwant:%q",
-				test.src, actual, expect)
+			t.Errorf("All:\nsrc:\n%s\ngot:\n%s\nwant:\n%s",
+				toLines(test.src),
+				toLines(actual), toLines(expect))
 		}
 	}
 }
