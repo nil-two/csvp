@@ -3,8 +3,17 @@ package main
 import (
 	"fmt"
 	"reflect"
+	"strings"
 	"testing"
 )
+
+func toLines(cells [][]string) string {
+	lines := make([]string, len(cells))
+	for i, line := range cells {
+		lines[i] = fmt.Sprintf("%q", line)
+	}
+	return strings.Join(lines, "\n")
+}
 
 var selectAllTests = []struct {
 	src []string
@@ -34,17 +43,16 @@ func TestSelectAll(t *testing.T) {
 				test.src, err)
 		}
 		if !reflect.DeepEqual(actual, expect) {
-			t.Errorf("All.Select(%q) = %q, want %q",
+			t.Errorf("All.Select(%q)\ngot :%q\nwant:%q",
 				test.src, actual, expect)
 		}
 	}
 }
 
 var newIndexesTests = []struct {
-	description string
-	list        string
-	wantErr     bool
-	indexes     []int
+	list    string
+	wantErr bool
+	indexes []int
 }{
 	{
 		list:    "",
@@ -198,8 +206,9 @@ func TestSelectIndexes(t *testing.T) {
 			}
 		}
 		if !reflect.DeepEqual(actual, expect) {
-			t.Errorf("%s: %q: got %q, want %q",
-				self, test.src, actual, expect)
+			t.Errorf("%s:\nsrc:\n%s\ngot:\n%s\nwant:\n%s",
+				self, toLines(test.src),
+				toLines(actual), toLines(expect))
 		}
 	}
 }
@@ -237,7 +246,7 @@ func TestNewHeaders(t *testing.T) {
 		expect := test.headers
 		actual := h.headers
 		if !reflect.DeepEqual(actual, expect) {
-			t.Errorf("NewHeaders(%q) = %v, want %v",
+			t.Errorf("NewHeaders(%q).headers:\ngot :%q\nwant:%q",
 				test.list, actual, expect)
 		}
 	}
@@ -297,8 +306,8 @@ func TestHeadersParseHeaders(t *testing.T) {
 		expect := test.indexes
 		actual := h.indexes
 		if !reflect.DeepEqual(actual, expect) {
-			t.Errorf("%q.ParseHeaders(%q).indexes = %v, want %v",
-				test.list, test.indexes, actual, expect)
+			t.Errorf("%q.ParseHeaders(%q).indexes:\ngot :%v\nwant:%v",
+				test.list, test.headers, actual, expect)
 		}
 	}
 }
@@ -433,8 +442,9 @@ func TestSelectHeaders(t *testing.T) {
 			}
 		}
 		if !reflect.DeepEqual(actual, expect) {
-			t.Errorf("%s: %q: got %q, want %q",
-				self, test.src, actual, expect)
+			t.Errorf("%s:\nsrc:\n%s\ngot:\n%s\nwant:\n%s",
+				self, toLines(test.src),
+				toLines(actual), toLines(expect))
 		}
 	}
 }
