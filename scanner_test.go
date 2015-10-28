@@ -29,10 +29,11 @@ type ScanTest struct {
 }
 
 type DummyAll struct {
+	dropHeaders bool
 }
 
 func (d *DummyAll) DropHeaders() bool {
-	return false
+	return d.dropHeaders
 }
 
 func (d *DummyAll) ParseHeaders(headers []string) error {
@@ -45,7 +46,7 @@ func (d *DummyAll) Select(recode []string) ([]string, error) {
 
 var scanTests = []ScanTest{
 	{
-		selector: &DummyAll{},
+		selector: &DummyAll{dropHeaders: false},
 		src: `
 1,1,1
 2,4,8
@@ -57,8 +58,34 @@ var scanTests = []ScanTest{
 		},
 	},
 	{
-		selector: &DummyAll{},
+		selector: &DummyAll{dropHeaders: false},
 		src: `
+1,2,3
+1,2,3,4,5,6
+`[1:],
+		result: []ScanResult{
+			{scan: true, text: "1\t2\t3", isErr: false},
+			{scan: false, text: "", isErr: true},
+			{scan: false, text: "", isErr: true},
+		},
+	},
+	{
+		selector: &DummyAll{dropHeaders: true},
+		src: `
+a,b,c
+1,1,1
+2,4,8
+`[1:],
+		result: []ScanResult{
+			{scan: true, text: "1\t1\t1", isErr: false},
+			{scan: true, text: "2\t4\t8", isErr: false},
+			{scan: false, text: "", isErr: false},
+		},
+	},
+	{
+		selector: &DummyAll{dropHeaders: true},
+		src: `
+a,b,c
 1,2,3
 1,2,3,4,5,6
 `[1:],
