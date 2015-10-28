@@ -48,6 +48,14 @@ var scanTests = []ScanTest{
 	{
 		selector: &DummyAll{dropHeaders: false},
 		src: `
+`[1:],
+		result: []ScanResult{
+			{scan: false, text: "", isErr: false},
+		},
+	},
+	{
+		selector: &DummyAll{dropHeaders: false},
+		src: `
 1,1,1
 2,4,8
 `[1:],
@@ -67,6 +75,23 @@ var scanTests = []ScanTest{
 			{scan: true, text: "1\t2\t3", isErr: false},
 			{scan: false, text: "", isErr: true},
 			{scan: false, text: "", isErr: true},
+		},
+	},
+	{
+		selector: &DummyAll{dropHeaders: true},
+		src: `
+`[1:],
+		result: []ScanResult{
+			{scan: false, text: "", isErr: false},
+		},
+	},
+	{
+		selector: &DummyAll{dropHeaders: true},
+		src: `
+a,b,c
+`[1:],
+		result: []ScanResult{
+			{scan: false, text: "", isErr: false},
 		},
 	},
 	{
