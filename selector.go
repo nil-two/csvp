@@ -7,8 +7,6 @@ import (
 	"strings"
 )
 
-var HEADER = regexp.MustCompile(`(?:[^,\\]|\\.)*`)
-
 type Selector interface {
 	DropHeaders() bool
 	ParseHeaders(headers []string) error
@@ -115,6 +113,8 @@ func (i *Indexes) Select(recode []string) ([]string, error) {
 	}
 	return a, nil
 }
+
+var HEADER = regexp.MustCompile(`(?:[^,\\]|\\.)*`)
 
 type Headers struct {
 	indexes []int
