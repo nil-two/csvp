@@ -34,7 +34,11 @@ func (a *All) Select(recode []string) ([]string, error) {
 	return recode, nil
 }
 
-var INDEX = regexp.MustCompile(`(?:[^,\\]|\\.)*`)
+var (
+	INDEXES = regexp.MustCompile(`^(?:\d*-\d*|\d+)(?:,(?:\d*-\d*|\d+))*$`)
+	INDEX   = regexp.MustCompile(`(?:\d*-\d*|\d+)`)
+	RANGE   = regexp.MustCompile(`^(\d*)-(\d*)$`)
+)
 
 type Indexes struct {
 	list    string
@@ -56,18 +60,48 @@ func (i *Indexes) ParseHeaders(headers []string) error {
 		i.indexes = make([]int, 0)
 		return nil
 	}
-	fields := INDEX.FindAllString(i.list, -1)
+	if !INDEXES.MatchString(i.list) {
+		return fmt.Errorf("%q: invalid syntax", i.list)
+	}
 
-	i.indexes = make([]int, len(fields))
-	for j, field := range fields {
-		index, err := strconv.Atoi(field)
-		if err != nil {
-			return err
+	i.indexes = make([]int, 0)
+	for _, index := range INDEX.FindAllString(i.list, -1) {
+		var err error
+		switch {
+		case RANGE.MatchString(index):
+			first, last := 1, len(headers)
+			matches := RANGE.FindStringSubmatch(index)
+			if matches[1] != "" {
+				first, err = strconv.Atoi(matches[1])
+				if err != nil {
+					return err
+				}
+				if first == 0 {
+					return fmt.Errorf("indexes are numberd from 1")
+				}
+			}
+			if matches[2] != "" {
+				last, err = strconv.Atoi(matches[2])
+				if err != nil {
+					return err
+				}
+				if last == 0 {
+					return fmt.Errorf("indexes are numberd from 1")
+				}
+			}
+			for idx := first - 1; idx < last && idx < len(headers); idx++ {
+				i.indexes = append(i.indexes, idx)
+			}
+		default:
+			idx, err := strconv.Atoi(index)
+			if err != nil {
+				return err
+			}
+			if idx == 0 {
+				return fmt.Errorf("indexes are numberd from 1")
+			}
+			i.indexes = append(i.indexes, idx-1)
 		}
-		if index < 1 {
-			return fmt.Errorf("indexes are numberd from 1")
-		}
-		i.indexes[j] = index - 1
 	}
 	return nil
 }
