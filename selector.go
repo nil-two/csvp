@@ -7,7 +7,7 @@ import (
 	"strings"
 )
 
-var FIELD = regexp.MustCompile(`(?:[^,\\]|\\.)*`)
+var HEADER = regexp.MustCompile(`(?:[^,\\]|\\.)*`)
 
 type Selector interface {
 	DropHeaders() bool
@@ -44,7 +44,7 @@ func NewIndexes(list string) (*Indexes, error) {
 			indexes: []int{},
 		}, nil
 	}
-	fields := FIELD.FindAllString(list, -1)
+	fields := HEADER.FindAllString(list, -1)
 
 	indexes := make([]int, len(fields))
 	for i, field := range fields {
@@ -92,7 +92,7 @@ func NewHeaders(list string) (*Headers, error) {
 		}, nil
 	}
 
-	headers := FIELD.FindAllString(list, -1)
+	headers := HEADER.FindAllString(list, -1)
 	for i := 0; i < len(headers); i++ {
 		headers[i] = strings.Replace(headers[i], `\,`, `,`, -1)
 	}
