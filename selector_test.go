@@ -71,37 +71,72 @@ var newIndexesTests = []struct {
 }{
 	{
 		list:    "",
-		headers: []string{"a", "bb", "ccc"},
+		headers: []string{"", "", ""},
 		indexes: []int{},
 	},
 	{
 		list:    "1",
-		headers: []string{"a", "bb", "ccc"},
+		headers: []string{"", "", ""},
 		indexes: []int{0},
 	},
 	{
 		list:    "3,1,4",
-		headers: []string{"a", "bb", "ccc"},
+		headers: []string{"", "", ""},
 		indexes: []int{2, 0, 3},
 	},
 	{
+		list:    "2-4",
+		headers: []string{"", "", "", "", ""},
+		indexes: []int{1, 2, 3},
+	},
+	{
+		list:    "2-8",
+		headers: []string{"", "", "", "", ""},
+		indexes: []int{1, 2, 3, 4},
+	},
+	{
+		list:    "-2",
+		headers: []string{"", "", "", "", ""},
+		indexes: []int{0, 1},
+	},
+	{
+		list:    "-8",
+		headers: []string{"", "", "", "", ""},
+		indexes: []int{0, 1, 2, 3, 4},
+	},
+	{
+		list:    "2-",
+		headers: []string{"", "", "", "", ""},
+		indexes: []int{1, 2, 3, 4},
+	},
+	{
+		list:    "8-",
+		headers: []string{"", "", "", "", ""},
+		indexes: []int{},
+	},
+	{
 		list:    "0,5",
-		headers: []string{"a", "bb", "ccc"},
+		headers: []string{"", "", ""},
 		wantErr: true,
 	},
 	{
-		list:    "-8,5",
-		headers: []string{"a", "bb", "ccc"},
+		list:    ",,",
+		headers: []string{"", "", ""},
+		wantErr: true,
+	},
+	{
+		list:    "--,5",
+		headers: []string{"", "", ""},
 		wantErr: true,
 	},
 	{
 		list:    "foo,5",
-		headers: []string{"a", "bb", "ccc"},
+		headers: []string{"", "", ""},
 		wantErr: true,
 	},
 	{
 		list:    "1\\,5",
-		headers: []string{"a", "bb", "ccc"},
+		headers: []string{"", "", ""},
 		wantErr: true,
 	},
 }
@@ -152,7 +187,7 @@ var selectIndexesTests = []struct {
 	{
 		description: "only one index",
 		list:        "1",
-		headers:     []string{"---", "---", "---"},
+		headers:     []string{"", "", ""},
 		src: [][]string{
 			{"aaa", "bbb", "ccc"},
 			{"ddd", "eee", "fff"},
@@ -165,7 +200,7 @@ var selectIndexesTests = []struct {
 	{
 		description: "index out of bounds",
 		list:        "4",
-		headers:     []string{"---", "---", "---"},
+		headers:     []string{"", "", ""},
 		src: [][]string{
 			{"aaa", "bbb", "ccc"},
 			{"ddd", "eee", "fff"},
@@ -178,7 +213,7 @@ var selectIndexesTests = []struct {
 	{
 		description: "multiple indexes",
 		list:        "3,1",
-		headers:     []string{"---", "---", "---"},
+		headers:     []string{"", "", ""},
 		src: [][]string{
 			{"aaa", "bbb", "ccc"},
 			{"ddd", "eee", "fff"},
@@ -191,7 +226,7 @@ var selectIndexesTests = []struct {
 	{
 		description: "duplicated indexes",
 		list:        "2,2,2",
-		headers:     []string{"---", "---", "---"},
+		headers:     []string{"", "", ""},
 		src: [][]string{
 			{"aaa", "bbb", "ccc"},
 			{"ddd", "eee", "fff"},
@@ -204,7 +239,7 @@ var selectIndexesTests = []struct {
 	{
 		description: "battery",
 		list:        "8,8,2,1,1,4",
-		headers:     []string{"---", "---", "---"},
+		headers:     []string{"", "", ""},
 		src: [][]string{
 			{"a", "bb", "ccc", "dddd", "eeeee"},
 			{"f", "gg", "hhh", "iiii", "jjjjj"},
