@@ -87,8 +87,8 @@ func (i *Indexes) ParseHeaders(headers []string) error {
 					return fmt.Errorf("indexes are numberd from 1")
 				}
 			}
-			for idx := first - 1; idx < last && idx < len(headers); idx++ {
-				i.indexes = append(i.indexes, idx)
+			for idx := first; idx <= last && idx <= len(headers); idx++ {
+				i.indexes = append(i.indexes, idx-1)
 			}
 		default:
 			idx, err := strconv.Atoi(index)
