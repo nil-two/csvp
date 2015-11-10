@@ -65,60 +65,72 @@ func TestSelectAll(t *testing.T) {
 
 var newIndexesTests = []struct {
 	list    string
+	headers []string
 	wantErr bool
 	indexes []int
 }{
 	{
 		list:    "",
+		headers: []string{"a", "bb", "ccc"},
 		indexes: []int{},
 	},
 	{
 		list:    "1",
+		headers: []string{"a", "bb", "ccc"},
 		indexes: []int{0},
 	},
 	{
 		list:    "3,1,4",
+		headers: []string{"a", "bb", "ccc"},
 		indexes: []int{2, 0, 3},
 	},
 	{
 		list:    "0,5",
+		headers: []string{"a", "bb", "ccc"},
 		wantErr: true,
 	},
 	{
 		list:    "-8,5",
+		headers: []string{"a", "bb", "ccc"},
 		wantErr: true,
 	},
 	{
 		list:    "foo,5",
+		headers: []string{"a", "bb", "ccc"},
 		wantErr: true,
 	},
 	{
 		list:    "1\\,5",
+		headers: []string{"a", "bb", "ccc"},
 		wantErr: true,
 	},
 }
 
 func TestNewIndexes(t *testing.T) {
 	for _, test := range newIndexesTests {
+		i, err := NewIndexes(test.list)
+		if err != nil {
+			t.Errorf("NewIndexes(%q) returns %q, want nil",
+				test.list, err)
+			continue
+		}
 		switch {
 		case test.wantErr:
-			_, err := NewIndexes(test.list)
-			if err == nil {
-				t.Errorf("NewIndexes(%q) returns nil, want err",
-					test.list)
+			if err = i.ParseHeaders(test.headers); err == nil {
+				t.Errorf("NewIndexes(%q).ParseHeaders(%q) returns nil, want err",
+					test.list, test.headers)
 			}
 		default:
-			i, err := NewIndexes(test.list)
-			if err != nil {
-				t.Errorf("NewIndexes(%q) returns %q, want nil",
-					test.list, err)
+			if err = i.ParseHeaders(test.headers); err != nil {
+				t.Errorf("NewIndexes(%q).ParseHeaders(%q) returns %q, want nil",
+					test.list, test.headers, err)
 				continue
 			}
 			expect := test.indexes
 			actual := i.indexes
 			if !reflect.DeepEqual(actual, expect) {
-				t.Errorf("NewIndexes(%q) = %v, want %v",
-					test.list, actual, expect)
+				t.Errorf("NewIndexes(%q).ParseHeaders(%q) = %v, want %v",
+					test.list, test.headers, actual, expect)
 			}
 		}
 	}
@@ -127,6 +139,7 @@ func TestNewIndexes(t *testing.T) {
 var selectIndexesTests = []struct {
 	description string
 	list        string
+	headers     []string
 	src         [][]string
 	dst         [][]string
 }{
@@ -139,6 +152,7 @@ var selectIndexesTests = []struct {
 	{
 		description: "only one index",
 		list:        "1",
+		headers:     []string{"---", "---", "---"},
 		src: [][]string{
 			{"aaa", "bbb", "ccc"},
 			{"ddd", "eee", "fff"},
@@ -151,6 +165,7 @@ var selectIndexesTests = []struct {
 	{
 		description: "index out of bounds",
 		list:        "4",
+		headers:     []string{"---", "---", "---"},
 		src: [][]string{
 			{"aaa", "bbb", "ccc"},
 			{"ddd", "eee", "fff"},
@@ -163,6 +178,7 @@ var selectIndexesTests = []struct {
 	{
 		description: "multiple indexes",
 		list:        "3,1",
+		headers:     []string{"---", "---", "---"},
 		src: [][]string{
 			{"aaa", "bbb", "ccc"},
 			{"ddd", "eee", "fff"},
@@ -175,6 +191,7 @@ var selectIndexesTests = []struct {
 	{
 		description: "duplicated indexes",
 		list:        "2,2,2",
+		headers:     []string{"---", "---", "---"},
 		src: [][]string{
 			{"aaa", "bbb", "ccc"},
 			{"ddd", "eee", "fff"},
@@ -187,6 +204,7 @@ var selectIndexesTests = []struct {
 	{
 		description: "battery",
 		list:        "8,8,2,1,1,4",
+		headers:     []string{"---", "---", "---"},
 		src: [][]string{
 			{"a", "bb", "ccc", "dddd", "eeeee"},
 			{"f", "gg", "hhh", "iiii", "jjjjj"},
@@ -206,6 +224,12 @@ func TestSelectIndexes(t *testing.T) {
 		if err != nil {
 			t.Errorf("NewIndexes(%q) returns %q, want nil",
 				test.list, err)
+			continue
+		}
+		if err := i.ParseHeaders(test.headers); err != nil {
+			t.Errorf("NewIndexes(%q).ParseHeaders(%q) returns %q, want nil",
+				test.list, test.headers, err)
+			continue
 		}
 		self := fmt.Sprintf("{list=%q, description=%q}",
 			test.list, test.description)
