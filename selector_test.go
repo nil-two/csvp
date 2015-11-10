@@ -115,6 +115,11 @@ var newIndexesTests = []struct {
 		indexes: []int{},
 	},
 	{
+		list:    "-",
+		headers: []string{"", "", "", "", ""},
+		indexes: []int{0, 1, 2, 3, 4},
+	},
+	{
 		list:    "0,5",
 		headers: []string{"", "", ""},
 		wantErr: true,
