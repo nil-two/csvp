@@ -34,31 +34,16 @@ func (a *All) Select(recode []string) ([]string, error) {
 	return recode, nil
 }
 
+var INDEX = regexp.MustCompile(`(?:[^,\\]|\\.)*`)
+
 type Indexes struct {
+	list    string
 	indexes []int
 }
 
 func NewIndexes(list string) (*Indexes, error) {
-	if list == "" {
-		return &Indexes{
-			indexes: []int{},
-		}, nil
-	}
-	fields := HEADER.FindAllString(list, -1)
-
-	indexes := make([]int, len(fields))
-	for i, field := range fields {
-		index, err := strconv.Atoi(field)
-		if err != nil {
-			return nil, err
-		}
-		if index < 1 {
-			return nil, fmt.Errorf("indexes are numberd from 1")
-		}
-		indexes[i] = index - 1
-	}
 	return &Indexes{
-		indexes: indexes,
+		list: list,
 	}, nil
 }
 
@@ -67,6 +52,23 @@ func (i *Indexes) DropHeaders() bool {
 }
 
 func (i *Indexes) ParseHeaders(headers []string) error {
+	if i.list == "" {
+		i.indexes = make([]int, 0)
+		return nil
+	}
+	fields := INDEX.FindAllString(i.list, -1)
+
+	i.indexes = make([]int, len(fields))
+	for j, field := range fields {
+		index, err := strconv.Atoi(field)
+		if err != nil {
+			return err
+		}
+		if index < 1 {
+			return fmt.Errorf("indexes are numberd from 1")
+		}
+		i.indexes[j] = index - 1
+	}
 	return nil
 }
 
