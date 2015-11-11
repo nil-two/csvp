@@ -42,7 +42,7 @@ func parseOption(args []string) (opt *Option, err error) {
 	flag := flags.NewParser(opt, flags.PassDoubleDash)
 
 	opt.Files, err = flag.ParseArgs(args)
-	if err != nil && !opt.IsHelp && !opt.IsVersion {
+	if err != nil {
 		return nil, err
 	}
 	return opt, nil
