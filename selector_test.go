@@ -311,12 +311,7 @@ var newHeadersTests = []struct {
 
 func TestNewHeaders(t *testing.T) {
 	for _, test := range newHeadersTests {
-		h, err := NewHeaders(test.list)
-		if err != nil {
-			t.Errorf("NewHeaders(%q) returns %q, want nil",
-				test.list, err)
-			continue
-		}
+		h := NewHeaders(test.list)
 		expect := test.headers
 		actual := h.headers
 		if !reflect.DeepEqual(actual, expect) {
@@ -365,13 +360,8 @@ var headersParseHeadersTests = []struct {
 
 func TestHeadersParseHeaders(t *testing.T) {
 	for _, test := range headersParseHeadersTests {
-		h, err := NewHeaders(test.list)
-		if err != nil {
-			t.Errorf("NewHeaders(%q) returns %q, want nil",
-				test.list, err)
-			continue
-		}
-		if err = h.ParseHeaders(test.headers); err != nil {
+		h := NewHeaders(test.list)
+		if err := h.ParseHeaders(test.headers); err != nil {
 			t.Errorf("%q.ParseHeaders(%q) returns %q, want nil",
 				test.list, test.headers, err)
 			continue
@@ -491,13 +481,9 @@ var selectHeadersTests = []struct {
 }
 
 func TestSelectHeaders(t *testing.T) {
+	var err error
 	for _, test := range selectHeadersTests {
-		h, err := NewHeaders(test.list)
-		if err != nil {
-			t.Errorf("NewHeaders(%q) returns %q, want nil",
-				test.list, err)
-			continue
-		}
+		h := NewHeaders(test.list)
 		if err = h.ParseHeaders(test.headers); err != nil {
 			t.Errorf("%q.ParseHeaders(%q) returns %q, want nil",
 				test.list, test.headers, err)
