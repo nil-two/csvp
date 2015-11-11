@@ -54,10 +54,7 @@ func newCSVScannerFromOption(opt *Option) (c *CSVScanner, err error) {
 	case opt.IndexesList != "" && opt.HeadersList != "":
 		return nil, fmt.Errorf("only one type of list may be specified")
 	case opt.IndexesList != "":
-		selector, err = NewIndexes(opt.IndexesList)
-		if err != nil {
-			return nil, err
-		}
+		selector = NewIndexes(opt.IndexesList)
 	case opt.HeadersList != "":
 		selector, err = NewHeaders(opt.HeadersList)
 		if err != nil {

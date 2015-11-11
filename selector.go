@@ -43,10 +43,10 @@ type Indexes struct {
 	indexes []int
 }
 
-func NewIndexes(list string) (*Indexes, error) {
+func NewIndexes(list string) *Indexes {
 	return &Indexes{
 		list: list,
-	}, nil
+	}
 }
 
 func (i *Indexes) DropHeaders() bool {
