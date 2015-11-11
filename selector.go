@@ -63,14 +63,14 @@ func (i *Indexes) ParseHeaders(headers []string) error {
 	}
 
 	i.indexes = make([]int, 0)
-	for _, index := range INDEX.FindAllString(i.list, -1) {
+	for _, rawIndex := range INDEX.FindAllString(i.list, -1) {
 		var err error
 		switch {
-		case RANGE.MatchString(index):
+		case RANGE.MatchString(rawIndex):
 			first, last := 1, len(headers)
-			matches := RANGE.FindStringSubmatch(index)
-			if matches[1] != "" {
-				first, err = strconv.Atoi(matches[1])
+			rawRange := RANGE.FindStringSubmatch(rawIndex)
+			if rawRange[1] != "" {
+				first, err = strconv.Atoi(rawRange[1])
 				if err != nil {
 					return err
 				}
@@ -78,8 +78,8 @@ func (i *Indexes) ParseHeaders(headers []string) error {
 					return fmt.Errorf("indexes are numberd from 1")
 				}
 			}
-			if matches[2] != "" {
-				last, err = strconv.Atoi(matches[2])
+			if rawRange[2] != "" {
+				last, err = strconv.Atoi(rawRange[2])
 				if err != nil {
 					return err
 				}
@@ -87,18 +87,18 @@ func (i *Indexes) ParseHeaders(headers []string) error {
 					return fmt.Errorf("indexes are numberd from 1")
 				}
 			}
-			for idx := first; idx <= last && idx <= len(headers); idx++ {
-				i.indexes = append(i.indexes, idx-1)
+			for index := first; index <= last && index <= len(headers); index++ {
+				i.indexes = append(i.indexes, index-1)
 			}
 		default:
-			idx, err := strconv.Atoi(index)
+			index, err := strconv.Atoi(rawIndex)
 			if err != nil {
 				return err
 			}
-			if idx == 0 {
+			if index == 0 {
 				return fmt.Errorf("indexes are numberd from 1")
 			}
-			i.indexes = append(i.indexes, idx-1)
+			i.indexes = append(i.indexes, index-1)
 		}
 	}
 	return nil
