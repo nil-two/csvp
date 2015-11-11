@@ -121,11 +121,11 @@ type Headers struct {
 	headers []string
 }
 
-func NewHeaders(list string) (*Headers, error) {
+func NewHeaders(list string) *Headers {
 	if list == "" {
 		return &Headers{
 			headers: []string{},
-		}, nil
+		}
 	}
 
 	headers := HEADER.FindAllString(list, -1)
@@ -134,7 +134,7 @@ func NewHeaders(list string) (*Headers, error) {
 	}
 	return &Headers{
 		headers: headers,
-	}, nil
+	}
 }
 
 func (h *Headers) DropHeaders() bool {
