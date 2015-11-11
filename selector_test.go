@@ -153,20 +153,15 @@ var newIndexesTests = []struct {
 
 func TestNewIndexes(t *testing.T) {
 	for _, test := range newIndexesTests {
-		i, err := NewIndexes(test.list)
-		if err != nil {
-			t.Errorf("NewIndexes(%q) returns %q, want nil",
-				test.list, err)
-			continue
-		}
+		i := NewIndexes(test.list)
 		switch {
 		case test.wantErr:
-			if err = i.ParseHeaders(test.headers); err == nil {
+			if err := i.ParseHeaders(test.headers); err == nil {
 				t.Errorf("NewIndexes(%q).ParseHeaders(%q) returns nil, want err",
 					test.list, test.headers)
 			}
 		default:
-			if err = i.ParseHeaders(test.headers); err != nil {
+			if err := i.ParseHeaders(test.headers); err != nil {
 				t.Errorf("NewIndexes(%q).ParseHeaders(%q) returns %q, want nil",
 					test.list, test.headers, err)
 				continue
@@ -264,14 +259,10 @@ var selectIndexesTests = []struct {
 }
 
 func TestSelectIndexes(t *testing.T) {
+	var err error
 	for _, test := range selectIndexesTests {
-		i, err := NewIndexes(test.list)
-		if err != nil {
-			t.Errorf("NewIndexes(%q) returns %q, want nil",
-				test.list, err)
-			continue
-		}
-		if err := i.ParseHeaders(test.headers); err != nil {
+		i := NewIndexes(test.list)
+		if err = i.ParseHeaders(test.headers); err != nil {
 			t.Errorf("NewIndexes(%q).ParseHeaders(%q) returns %q, want nil",
 				test.list, test.headers, err)
 			continue
