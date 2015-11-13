@@ -27,6 +27,10 @@ func (c *CSVScanner) SetOutputDelimiter(s string) {
 	c.outputDelimiter = s
 }
 
+func (c *CSVScanner) SetDelimiter(r rune) {
+	c.reader.Comma = r
+}
+
 func (c *CSVScanner) Err() error {
 	if c.err == io.EOF {
 		return nil
