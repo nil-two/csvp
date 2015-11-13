@@ -30,6 +30,10 @@ Options:
                  select only these indexes
   -h, --headers=LIST
                  select only these headers
+  -t, --tsv
+                 equivalent to -d'\t'
+  -d, --delimiter=DELIM
+                 use DELIM instead of comma for field delimiter
   -D, --output-delimiter=STRING
                  use STRING as the output delimiter (default: \t)
   --help

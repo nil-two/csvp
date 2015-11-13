@@ -7,7 +7,7 @@ import (
 )
 
 type CSVScanner struct {
-	OutputDelimiter string
+	outputDelimiter string
 	text            string
 	err             error
 	parsedHeaders   bool
@@ -17,10 +17,18 @@ type CSVScanner struct {
 
 func NewCSVScanner(s Selector, r io.Reader) *CSVScanner {
 	return &CSVScanner{
-		OutputDelimiter: "\t",
+		outputDelimiter: "\t",
 		selector:        s,
 		reader:          csv.NewReader(r),
 	}
+}
+
+func (c *CSVScanner) SetOutputDelimiter(s string) {
+	c.outputDelimiter = s
+}
+
+func (c *CSVScanner) SetDelimiter(r rune) {
+	c.reader.Comma = r
 }
 
 func (c *CSVScanner) Err() error {
@@ -70,7 +78,7 @@ func (c *CSVScanner) Scan() bool {
 		c.text = ""
 		return false
 	}
-	c.text = strings.Join(recode, c.OutputDelimiter)
+	c.text = strings.Join(recode, c.outputDelimiter)
 
 	return true
 }
