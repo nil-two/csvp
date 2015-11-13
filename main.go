@@ -31,7 +31,7 @@ func version() {
 type Option struct {
 	IndexesList string `short:"i" long:"indexes"`
 	HeadersList string `short:"h" long:"headers"`
-	Delimiter   string `short:"d" long:"delimiter" default:"\t"`
+	Delimiter   string `short:"D" long:"output-delimiter" default:"\t"`
 	IsHelp      bool   `          long:"help"`
 	IsVersion   bool   `          long:"version"`
 	Files       []string
