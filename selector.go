@@ -38,6 +38,17 @@ var (
 	RANGE   = regexp.MustCompile(`^(\d*)-(\d*)$`)
 )
 
+func toIndex(s string) (index int, err error) {
+	index, err = strconv.Atoi(s)
+	if err != nil {
+		return 0, err
+	}
+	if index == 0 {
+		return 0, fmt.Errorf("indexes are numberd from 1")
+	}
+	return index, err
+}
+
 type Indexes struct {
 	list    string
 	indexes []int
@@ -70,33 +81,24 @@ func (i *Indexes) ParseHeaders(headers []string) error {
 			first, last := 1, len(headers)
 			rawRange := RANGE.FindStringSubmatch(rawIndex)
 			if rawRange[1] != "" {
-				first, err = strconv.Atoi(rawRange[1])
+				first, err = toIndex(rawRange[1])
 				if err != nil {
 					return err
-				}
-				if first == 0 {
-					return fmt.Errorf("indexes are numberd from 1")
 				}
 			}
 			if rawRange[2] != "" {
-				last, err = strconv.Atoi(rawRange[2])
+				last, err = toIndex(rawRange[2])
 				if err != nil {
 					return err
-				}
-				if last == 0 {
-					return fmt.Errorf("indexes are numberd from 1")
 				}
 			}
 			for index := first; index <= last && index <= len(headers); index++ {
 				i.indexes = append(i.indexes, index-1)
 			}
 		default:
-			index, err := strconv.Atoi(rawIndex)
+			index, err := toIndex(rawIndex)
 			if err != nil {
 				return err
-			}
-			if index == 0 {
-				return fmt.Errorf("indexes are numberd from 1")
 			}
 			i.indexes = append(i.indexes, index-1)
 		}
