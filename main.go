@@ -38,6 +38,7 @@ type Option struct {
 	IndexesList     string `short:"i" long:"indexes"`
 	HeadersList     string `short:"h" long:"headers"`
 	Delimiter       string `short:"d" long:"delimiter" default:","`
+	IsTSV           bool   `short:"t" long:"tsv"`
 	OutputDelimiter string `short:"D" long:"output-delimiter" default:"\t"`
 	IsHelp          bool   `          long:"help"`
 	IsVersion       bool   `          long:"version"`
@@ -86,14 +87,18 @@ func newCSVScannerFromOption(opt *Option) (c *CSVScanner, err error) {
 		return nil, err
 	}
 
-	delimiter, err := toDelimiter(opt.Delimiter)
-	if err != nil {
-		return nil, err
-	}
-
 	c = NewCSVScanner(selector, reader)
-	c.SetDelimiter(delimiter)
 	c.SetOutputDelimiter(opt.OutputDelimiter)
+	switch {
+	case opt.IsTSV:
+		c.SetDelimiter('\t')
+	default:
+		delimiter, err := toDelimiter(opt.Delimiter)
+		if err != nil {
+			return nil, err
+		}
+		c.SetDelimiter(delimiter)
+	}
 	return c, nil
 }
 
