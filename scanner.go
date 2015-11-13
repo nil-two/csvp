@@ -23,12 +23,12 @@ func NewCSVScanner(s Selector, r io.Reader) *CSVScanner {
 	}
 }
 
-func (c *CSVScanner) SetOutputDelimiter(s string) {
-	c.outputDelimiter = s
-}
-
 func (c *CSVScanner) SetDelimiter(r rune) {
 	c.reader.Comma = r
+}
+
+func (c *CSVScanner) SetOutputDelimiter(s string) {
+	c.outputDelimiter = s
 }
 
 func (c *CSVScanner) Err() error {
