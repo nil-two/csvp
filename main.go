@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"os"
+	"strconv"
 
 	"github.com/jessevdk/go-flags"
 	"github.com/yuya-takeyama/argf"
@@ -36,6 +37,7 @@ func version() {
 type Option struct {
 	IndexesList     string `short:"i" long:"indexes"`
 	HeadersList     string `short:"h" long:"headers"`
+	Delimiter       string `short:"d" long:"delimiter" default:","`
 	OutputDelimiter string `short:"D" long:"output-delimiter" default:"\t"`
 	IsHelp          bool   `          long:"help"`
 	IsVersion       bool   `          long:"version"`
@@ -51,6 +53,19 @@ func parseOption(args []string) (opt *Option, err error) {
 		return nil, err
 	}
 	return opt, nil
+}
+
+func toDelimiter(s string) (r rune, err error) {
+	s, err = strconv.Unquote(`"` + s + `"`)
+	if err != nil {
+		return 0, err
+	}
+
+	runes := []rune(s)
+	if len(runes) != 1 {
+		return 0, fmt.Errorf("the delimiter must be a single character")
+	}
+	return runes[0], nil
 }
 
 func newCSVScannerFromOption(opt *Option) (c *CSVScanner, err error) {
@@ -71,7 +86,13 @@ func newCSVScannerFromOption(opt *Option) (c *CSVScanner, err error) {
 		return nil, err
 	}
 
+	delimiter, err := toDelimiter(opt.Delimiter)
+	if err != nil {
+		return nil, err
+	}
+
 	c = NewCSVScanner(selector, reader)
+	c.SetDelimiter(delimiter)
 	c.SetOutputDelimiter(opt.OutputDelimiter)
 	return c, nil
 }
