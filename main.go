@@ -72,7 +72,7 @@ func newCSVScannerFromOption(opt *Option) (c *CSVScanner, err error) {
 	}
 
 	c = NewCSVScanner(selector, reader)
-	c.OutputDelimiter = opt.OutputDelimiter
+	c.SetOutputDelimiter(opt.OutputDelimiter)
 	return c, nil
 }
 
