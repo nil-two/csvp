@@ -34,12 +34,12 @@ func version() {
 }
 
 type Option struct {
-	IndexesList string `short:"i" long:"indexes"`
-	HeadersList string `short:"h" long:"headers"`
-	Delimiter   string `short:"D" long:"output-delimiter" default:"\t"`
-	IsHelp      bool   `          long:"help"`
-	IsVersion   bool   `          long:"version"`
-	Files       []string
+	IndexesList     string `short:"i" long:"indexes"`
+	HeadersList     string `short:"h" long:"headers"`
+	OutputDelimiter string `short:"D" long:"output-delimiter" default:"\t"`
+	IsHelp          bool   `          long:"help"`
+	IsVersion       bool   `          long:"version"`
+	Files           []string
 }
 
 func parseOption(args []string) (opt *Option, err error) {
@@ -72,7 +72,7 @@ func newCSVScannerFromOption(opt *Option) (c *CSVScanner, err error) {
 	}
 
 	c = NewCSVScanner(selector, reader)
-	c.Delimiter = opt.Delimiter
+	c.OutputDelimiter = opt.OutputDelimiter
 	return c, nil
 }
 

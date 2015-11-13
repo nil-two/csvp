@@ -7,19 +7,19 @@ import (
 )
 
 type CSVScanner struct {
-	Delimiter     string
-	text          string
-	err           error
-	parsedHeaders bool
-	selector      Selector
-	reader        *csv.Reader
+	OutputDelimiter string
+	text            string
+	err             error
+	parsedHeaders   bool
+	selector        Selector
+	reader          *csv.Reader
 }
 
 func NewCSVScanner(s Selector, r io.Reader) *CSVScanner {
 	return &CSVScanner{
-		Delimiter: "\t",
-		selector:  s,
-		reader:    csv.NewReader(r),
+		OutputDelimiter: "\t",
+		selector:        s,
+		reader:          csv.NewReader(r),
 	}
 }
 
@@ -70,7 +70,7 @@ func (c *CSVScanner) Scan() bool {
 		c.text = ""
 		return false
 	}
-	c.text = strings.Join(recode, c.Delimiter)
+	c.text = strings.Join(recode, c.OutputDelimiter)
 
 	return true
 }
