@@ -34,7 +34,7 @@ Options:
 
 func version() {
 	os.Stderr.WriteString(`
-0.6.0
+0.7.0
 `[1:])
 }
 
