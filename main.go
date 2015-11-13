@@ -14,11 +14,16 @@ Usage: csvp [OPTION]... [FILE]...
 Print selected parts of CSV from each FILE to standard output.
 
 Options:
-  -i, --indexes=LIST       select only these indexes
-  -h, --headers=LIST       select only these headers
-  -d, --delimiter=STRING   use STRING as the output delimiter (default: \t)
-      --help               display this help text and exit
-      --version            display version information and exit
+  -i, --indexes=LIST
+                 select only these indexes
+  -h, --headers=LIST
+                 select only these headers
+  -D, --output-delimiter=STRING
+                 use STRING as the output delimiter (default: \t)
+  --help
+                 display this help text and exit
+  --version
+                 output version information and exit
 `[1:])
 }
 
