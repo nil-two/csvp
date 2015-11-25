@@ -53,6 +53,64 @@ Display the usage and exit.
 
 Output the version of csvp.
 
+### -i, --indexes=LIST
+
+Select only specified indexes.
+
+Indexes separated by a `,`.
+
+Each index starts from `1`, they are specified by the `index` or `range`.
+
+```sh
+# select only second column, and from fourth column to sixth column
+csvp --indexes=2,4-6
+
+# select only ninth column, seventh column, and up to third column
+csvp --indexes=9,7,-3
+```
+
+#### index
+
+`index` is a single index.
+
+```sh
+# select only second column
+csvp --indexes=2
+
+# select only forth column, first column, and second column
+csvp --indexes=4,1,2
+```
+
+#### range
+
+`range` are indexes from `first` to `last`.
+It starts from the head if omitted `first`,
+It continues until the end if omitted `last`.
+
+```sh
+# select only from the second column to the fourth column
+csvp --indexes=2-4
+
+# select only third column later
+csvp --indexes=3-
+
+# select only up to third column
+csvp --indexes=-3
+
+# select all columns
+csvp --indexes=-
+```
+
+#### syntax of indexes list
+
+Here is the syntax of indexes in extended BNF.
+
+```
+indexes = ( index | range ) , { "," , ( index | range ) }
+range   = [ { digit } ] , "-" , [ { digit } ]
+index   = { digit }
+```
+
 License
 -------
 
