@@ -143,6 +143,19 @@ letter is a unicode character other than `,`.
 
 Change ths input delimiter to `\t`.  equivalent to -d'\t'.
 
+### -d, --delimiter=DELIM
+
+Change the input delimiter to `DELIM`.
+`DELIM` is a unicode character.
+
+```sh
+# Read TSV
+csvp --delimiter='\t'
+
+# Read SSV
+csvp --delimiter=' '
+```
+
 License
 -------
 
