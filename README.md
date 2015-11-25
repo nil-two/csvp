@@ -42,6 +42,17 @@ Options:
                  output version information and exit
 ```
 
+Options
+-------
+
+### --help
+
+Display the usage and exit.
+
+### --version
+
+Output the version of csvp.
+
 License
 -------
 
