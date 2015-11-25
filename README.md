@@ -111,6 +111,34 @@ range   = [ { digit } ] , "-" , [ { digit } ]
 index   = { digit }
 ```
 
+### -h, --headers=LIST
+
+Select only specified headers.
+
+Headers separated by a `,`.
+
+```sh
+# select only column of name
+csvp --headers=name
+
+# select only column of name, column of price, and column of quantity
+csvp --indexes=name,price,quantity
+
+# select only columns of "foo,bar" and columns of "baz"
+csvp --indexes="foo\,bar,baz"
+```
+
+#### syntax of headers list
+
+Here is the syntax of headers in extended BNF.
+
+```
+headers = header , { "," , header }
+header  = { letter | "\," }
+```
+
+letter is a unicode character other than `,`.
+
 License
 -------
 
