@@ -156,6 +156,19 @@ csvp --delimiter='\t'
 csvp --delimiter=' '
 ```
 
+### -D, --output-delimiter=STRING
+
+Change the output delimiter to `STRING`.
+`STRING` is unicode characters.
+
+```sh
+# Outputs with a slash delimited
+csvp --output-delimiter=/
+
+# Outputs with a "::" delimited
+csvp --output-delimiter=::
+```
+
 License
 -------
 
