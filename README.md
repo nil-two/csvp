@@ -139,6 +139,10 @@ header  = { letter | "\," }
 
 letter is a unicode character other than `,`.
 
+### -t, -tsv
+
+Change ths input delimiter to `\t`.  equivalent to -d'\t'.
+
 License
 -------
 
