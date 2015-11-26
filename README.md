@@ -42,6 +42,15 @@ Options:
                  output version information and exit
 ```
 
+Installation
+------------
+
+### go get
+
+```
+go get github.com/kusabashira/csvp
+```
+
 Options
 -------
 
