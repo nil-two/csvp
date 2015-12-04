@@ -1,7 +1,7 @@
 csvp
 ====
 
-[![Build Status](https://travis-ci.org/kusabashira/csvp.svg?branch=master)](https://travis-ci.org/kusabashira/csvp.svg?branch=master)
+[![Build Status](https://travis-ci.org/kusabashira/csvp.svg?branch=master)](https://travis-ci.org/kusabashira/csvp)
 
 Print selected parts of CSV from each FILE to standard output.
 
