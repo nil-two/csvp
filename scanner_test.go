@@ -144,3 +144,16 @@ func TestScan(t *testing.T) {
 		}
 	}
 }
+
+func TestBytes(t *testing.T) {
+	selector := &DummyAll{dropHeaders: false}
+	r := strings.NewReader("100,200,300\n")
+	c := NewCSVScanner(selector, r)
+	c.Scan()
+
+	expect := c.Text()
+	actual := string(c.Bytes())
+	if actual != expect {
+		t.Errorf("expected string(c.Byte()) to equal c.Text()")
+	}
+}
