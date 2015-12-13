@@ -2,10 +2,11 @@ package main
 
 import (
 	"fmt"
+	"io/ioutil"
 	"os"
 	"strconv"
 
-	"github.com/jessevdk/go-flags"
+	"github.com/ogier/pflag"
 	"github.com/yuya-takeyama/argf"
 )
 
@@ -39,24 +40,34 @@ func version() {
 }
 
 type Option struct {
-	IndexesList     string `short:"i" long:"indexes"`
-	HeadersList     string `short:"h" long:"headers"`
-	IsTSV           bool   `short:"t" long:"tsv"`
-	Delimiter       string `short:"d" long:"delimiter" default:","`
-	OutputDelimiter string `short:"D" long:"output-delimiter" default:"\t"`
-	IsHelp          bool   `          long:"help"`
-	IsVersion       bool   `          long:"version"`
+	IndexesList     string
+	HeadersList     string
+	IsTSV           bool
+	Delimiter       string
+	OutputDelimiter string
+	IsHelp          bool
+	IsVersion       bool
 	Files           []string
 }
 
 func parseOption(args []string) (opt *Option, err error) {
-	opt = &Option{}
-	flag := flags.NewParser(opt, flags.PassDoubleDash)
+	flag := pflag.NewFlagSet("csvp", pflag.ContinueOnError)
+	flag.SetOutput(ioutil.Discard)
 
-	opt.Files, err = flag.ParseArgs(args)
-	if err != nil {
-		return nil, err
+	opt = &Option{}
+	flag.StringVarP(&opt.IndexesList, "indexes", "i", "", "")
+	flag.StringVarP(&opt.HeadersList, "headers", "h", "", "")
+	flag.BoolVarP(&opt.IsTSV, "tsv", "t", false, "")
+	flag.StringVarP(&opt.Delimiter, "delimiter", "d", ",", "")
+	flag.StringVarP(&opt.OutputDelimiter, "output-delimiter", "D", "\t", "")
+	flag.BoolVarP(&opt.IsHelp, "help", "", false, "")
+	flag.BoolVarP(&opt.IsVersion, "version", "", false, "")
+
+	if err = flag.Parse(args); err != nil {
+		return opt, err
 	}
+
+	opt.Files = flag.Args()
 	return opt, nil
 }
 
