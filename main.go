@@ -64,7 +64,7 @@ func parseOption(args []string) (opt *Option, err error) {
 	flag.BoolVarP(&opt.IsVersion, "version", "", false, "")
 
 	if err = flag.Parse(args); err != nil {
-		return opt, err
+		return nil, err
 	}
 
 	opt.Files = flag.Args()
