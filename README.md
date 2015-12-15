@@ -118,7 +118,7 @@ Here is the syntax of indexes in extended BNF.
 
 ```
 indexes = ( index | range ) , { "," , ( index | range ) }
-range   = [ { digit } ] , "-" , [ { digit } ]
+range   = [ index ] , "-" , [ index ]
 index   = { digit }
 ```
 
