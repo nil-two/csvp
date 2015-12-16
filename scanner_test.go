@@ -157,3 +157,59 @@ func TestBytes(t *testing.T) {
 		t.Errorf("expected string(c.Byte()) to equal c.Text()")
 	}
 }
+
+var delimiterTests = []struct {
+	delimiter rune
+	src       string
+	dst       []string
+}{
+	{
+		delimiter: ' ',
+		src: `
+aaa bbb ccc
+ddd eee fff
+`[1:],
+		dst: []string{
+			"aaa\tbbb\tccc",
+			"ddd\teee\tfff",
+		},
+	},
+	{
+		delimiter: '/',
+		src: `
+aaa/bbb/ccc/ddd
+eee/fff/ggg/hhh
+`[1:],
+		dst: []string{
+			"aaa\tbbb\tccc\tddd",
+			"eee\tfff\tggg\thhh",
+		},
+	},
+}
+
+func TestScanWithDelimiter(t *testing.T) {
+	selector := &DummyAll{}
+	for _, test := range delimiterTests {
+		r := strings.NewReader(test.src)
+		c := NewCSVScanner(selector, r)
+		c.SetDelimiter(test.delimiter)
+
+		expect := test.dst
+		actual := make([]string, 0)
+		for c.Scan() {
+			actual = append(actual, c.Text())
+		}
+		if c.Err() != nil {
+			t.Errorf("delimiter:%q\nsrc:\n%sgot: %v, want nil",
+				test.delimiter, test.src, c.Err())
+			continue
+		}
+		if !reflect.DeepEqual(actual, expect) {
+			t.Errorf("delimiter:%q\nsrc:\n%sgot:\n%s\nwant:\n%s",
+				test.delimiter,
+				test.src,
+				strings.Join(actual, "\n"),
+				strings.Join(expect, "\n"))
+		}
+	}
+}
