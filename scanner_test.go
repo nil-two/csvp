@@ -213,3 +213,61 @@ func TestScanWithDelimiter(t *testing.T) {
 		}
 	}
 }
+
+var outputDelimiterTests = []struct {
+	outputDelimiter string
+	src             string
+	dst             []string
+}{
+	{
+		outputDelimiter: "...",
+		src: `
+aaa,bbb,ccc
+ddd,eee,fff
+`[1:],
+		dst: []string{
+			"aaa...bbb...ccc",
+			"ddd...eee...fff",
+		},
+	},
+	{
+		outputDelimiter: "→",
+		src: `
+aaa,bbb,ccc,ddd
+eee,fff,ggg,hhh
+`[1:],
+		dst: []string{
+			"aaa→bbb→ccc→ddd",
+			"eee→fff→ggg→hhh",
+		},
+	},
+}
+
+func TestScanWithOutputDelimiter(t *testing.T) {
+	selector := &DummyAll{}
+	for _, test := range outputDelimiterTests {
+		r := strings.NewReader(test.src)
+		c := NewCSVScanner(selector, r)
+		c.SetOutputDelimiter(test.outputDelimiter)
+
+		expect := test.dst
+		actual := make([]string, 0)
+		for c.Scan() {
+			actual = append(actual, c.Text())
+		}
+		if c.Err() != nil {
+			t.Errorf("output-delimiter:%q\nsrc:\n%s"+
+				"got: %v, want nil",
+				test.outputDelimiter, test.src, c.Err())
+			continue
+		}
+		if !reflect.DeepEqual(actual, expect) {
+			t.Errorf("output-delimiter:%q\nsrc:\n%s"+
+				"got:\n%s\nwant:\n%s",
+				test.outputDelimiter,
+				test.src,
+				strings.Join(actual, "\n"),
+				strings.Join(expect, "\n"))
+		}
+	}
+}
