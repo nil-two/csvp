@@ -29,7 +29,8 @@ type ScanTest struct {
 }
 
 type DummyAll struct {
-	dropHeaders bool
+	dropHeaders              bool
+	causeErrorAtParseHeaders bool
 }
 
 func (d *DummyAll) DropHeaders() bool {
@@ -37,6 +38,9 @@ func (d *DummyAll) DropHeaders() bool {
 }
 
 func (d *DummyAll) ParseHeaders(headers []string) error {
+	if d.causeErrorAtParseHeaders {
+		return fmt.Errorf("parse error")
+	}
 	return nil
 }
 
@@ -116,6 +120,18 @@ a,b,c
 `[1:],
 		result: []ScanResult{
 			{scan: true, text: "1\t2\t3", isErr: false},
+			{scan: false, text: "", isErr: true},
+			{scan: false, text: "", isErr: true},
+		},
+	},
+	{
+		selector: &DummyAll{causeErrorAtParseHeaders: true},
+		src: `
+1,1,1
+2,4,8
+`[1:],
+		result: []ScanResult{
+			{scan: false, text: "", isErr: true},
 			{scan: false, text: "", isErr: true},
 			{scan: false, text: "", isErr: true},
 		},
