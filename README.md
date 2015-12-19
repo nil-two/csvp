@@ -13,7 +13,7 @@ Grapes,140,8
 Pineapple,400,2
 Orange,50,14
 
-$ cat items.csv | csvp -h=price,quantity
+$ cat items.csv | csvp -h price,quantity
 60	20
 140	8
 400	2
