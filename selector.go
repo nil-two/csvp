@@ -46,7 +46,7 @@ func toIndex(s string) (index int, err error) {
 	if index == 0 {
 		return 0, fmt.Errorf("indexes are numberd from 1")
 	}
-	return index, err
+	return index, nil
 }
 
 type Indexes struct {
