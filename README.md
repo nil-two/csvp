@@ -150,7 +150,7 @@ header  = { letter | "\," }
 
 letter is a unicode character other than `,`.
 
-### -t, -tsv
+### -t, --tsv
 
 Change ths input delimiter to `\t`.  equivalent to -d'\t'.
 
