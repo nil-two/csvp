@@ -152,7 +152,7 @@ letter is a unicode character other than `,`.
 
 ### -t, --tsv
 
-Change ths input delimiter to `\t`.  equivalent to -d'\t'.
+Change the input delimiter to `\t`.  equivalent to -d'\t'.
 
 ### -d, --delimiter=DELIM
 
