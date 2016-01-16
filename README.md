@@ -47,6 +47,10 @@ Options:
 Installation
 ------------
 
+### compiled binary
+
+See [releases](https://github.com/kusabashira/csvp/releases)
+
 ### go get
 
 ```
