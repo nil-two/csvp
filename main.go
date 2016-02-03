@@ -10,7 +10,7 @@ import (
 	"github.com/yuya-takeyama/argf"
 )
 
-func usage() {
+func printUsage() {
 	os.Stderr.WriteString(`
 Usage: csvp [OPTION]... [FILE]...
 Print selected parts of CSV from each FILE to standard output.
@@ -143,7 +143,7 @@ func _main() int {
 	}
 	switch {
 	case opt.IsHelp:
-		usage()
+		printUsage()
 		return 0
 	case opt.IsVersion:
 		printVersion()
