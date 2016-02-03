@@ -11,12 +11,13 @@ import (
 )
 
 var (
+	name    = "csvp"
 	version = "0.8.1"
 )
 
 func printUsage() {
-	os.Stderr.WriteString(`
-Usage: csvp [OPTION]... [FILE]...
+	fmt.Fprintf(os.Stderr, `
+Usage: %s [OPTION]... [FILE]...
 Print selected parts of CSV from each FILE to standard output.
 
 Options:
@@ -34,7 +35,7 @@ Options:
                  display this help text and exit
   --version
                  output version information and exit
-`[1:])
+`[1:], name)
 }
 
 func printVersion() {
@@ -53,7 +54,7 @@ type Option struct {
 }
 
 func parseOption(args []string) (opt *Option, err error) {
-	flag := pflag.NewFlagSet("csvp", pflag.ContinueOnError)
+	flag := pflag.NewFlagSet(name, pflag.ContinueOnError)
 	flag.SetOutput(ioutil.Discard)
 
 	opt = &Option{}
@@ -127,13 +128,11 @@ func do(c *CSVScanner) error {
 }
 
 func printErr(err error) {
-	fmt.Fprintln(os.Stderr, "cspv:", err)
+	fmt.Fprintf(os.Stderr, "%s: %s\n", name, err)
 }
 
 func guideToHelp() {
-	os.Stderr.WriteString(`
-Try 'cspv --help' for more information.
-`[1:])
+	fmt.Fprintf(os.Stderr, "Try '%s --help' for more information.\n", name)
 }
 
 func _main() int {
