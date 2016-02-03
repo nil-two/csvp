@@ -10,6 +10,10 @@ import (
 	"github.com/yuya-takeyama/argf"
 )
 
+var (
+	version = "0.8.1"
+)
+
 func printUsage() {
 	os.Stderr.WriteString(`
 Usage: csvp [OPTION]... [FILE]...
@@ -34,9 +38,7 @@ Options:
 }
 
 func printVersion() {
-	os.Stderr.WriteString(`
-0.8.1
-`[1:])
+	fmt.Fprintln(os.Stderr, version)
 }
 
 type Option struct {
