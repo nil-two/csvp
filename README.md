@@ -121,7 +121,7 @@ csvp --indexes=-
 Here is the syntax of indexes in extended BNF.
 
 ```
-indexes = ( index | range ) , { "," , ( index | range ) }
+indexes = ( index | range ) , [ { "," , ( index | range ) } ]
 range   = [ index ] , "-" , [ index ]
 index   = { digit }
 ```
@@ -148,7 +148,7 @@ csvp --indexes="foo\,bar,baz"
 Here is the syntax of headers in extended BNF.
 
 ```
-headers = header , { "," , header }
+headers = header , [ { "," , header } ]
 header  = { letter | "\," }
 ```
 
