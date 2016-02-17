@@ -121,9 +121,10 @@ csvp --indexes=-
 Here is the syntax of indexes in extended BNF.
 
 ```
-indexes = ( index | range ) , [ { "," , ( index | range ) } ]
-range   = [ index ] , "-" , [ index ]
-index   = { digit }
+indexes = ( index | range ) , { "," , ( index | range ) } ;
+range   = [ index ] , "-" , [ index ] ;
+index   = { digit } ;
+digit   = "1" | "2" | "3" | "4" | "5" | "6" | "7" | "8" | "9" ;
 ```
 
 ### -h, --headers=LIST
