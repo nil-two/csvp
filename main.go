@@ -46,6 +46,10 @@ func printErr(err error) {
 	fmt.Fprintf(os.Stderr, "%s: %s\n", name, err)
 }
 
+func guideToHelp() {
+	fmt.Fprintf(os.Stderr, "Try '%s --help' for more information.\n", name)
+}
+
 type Option struct {
 	IndexesList     string
 	HeadersList     string
@@ -129,10 +133,6 @@ func do(c *CSVScanner) error {
 		fmt.Println(c.Text())
 	}
 	return c.Err()
-}
-
-func guideToHelp() {
-	fmt.Fprintf(os.Stderr, "Try '%s --help' for more information.\n", name)
 }
 
 func _main() int {
