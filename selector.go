@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"regexp"
 	"strconv"
+	"strings"
 )
 
 type Selector interface {
@@ -118,6 +119,7 @@ func (i *Indexes) Select(recode []string) ([]string, error) {
 var (
 	HEADER    = regexp.MustCompile(`(?:[^,\\]|\\.)*`)
 	BACKSLASH = regexp.MustCompile(`\\(.)`)
+	TRAILING  = regexp.MustCompile(`\\+$`)
 )
 
 type Headers struct {
@@ -126,6 +128,9 @@ type Headers struct {
 }
 
 func NewHeaders(list string) *Headers {
+	list = TRAILING.ReplaceAllStringFunc(list, func(s string) string {
+		return strings.Repeat(`\\`, len(s)/2)
+	})
 	if list == "" {
 		return &Headers{
 			headers: []string{},
