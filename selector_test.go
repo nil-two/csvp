@@ -356,6 +356,21 @@ var headersParseHeadersTests = []struct {
 		headers: []string{"name", "price", "quantity"},
 		indexes: []int{-1, 0, 0, 2, -1, -1},
 	},
+	{
+		list:    "a\\,b\\,c,d",
+		headers: []string{"d", "a,b,c"},
+		indexes: []int{1, 0},
+	},
+	{
+		list:    "a\\\\b\\,c,d",
+		headers: []string{"d", "a\\b,c"},
+		indexes: []int{1, 0},
+	},
+	{
+		list:    "a\\b\\c,d",
+		headers: []string{"d", "abc"},
+		indexes: []int{1, 0},
+	},
 }
 
 func TestHeadersParseHeaders(t *testing.T) {
