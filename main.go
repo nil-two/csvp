@@ -42,6 +42,10 @@ func printVersion() {
 	fmt.Fprintln(os.Stderr, version)
 }
 
+func printErr(err error) {
+	fmt.Fprintf(os.Stderr, "%s: %s\n", name, err)
+}
+
 type Option struct {
 	IndexesList     string
 	HeadersList     string
@@ -125,10 +129,6 @@ func do(c *CSVScanner) error {
 		fmt.Println(c.Text())
 	}
 	return c.Err()
-}
-
-func printErr(err error) {
-	fmt.Fprintf(os.Stderr, "%s: %s\n", name, err)
 }
 
 func guideToHelp() {
