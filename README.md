@@ -149,11 +149,9 @@ csvp --indexes="foo\,bar,baz"
 Here is the syntax of headers in extended BNF.
 
 ```
-headers = header , [ { "," , header } ]
-header  = { letter | "\," }
+headers = header , { "," , header } ;
+header  = { [ "\" ] , ? unicode character ? - "," | "\," } ;
 ```
-
-letter is a unicode character other than `,`.
 
 ### -t, --tsv
 
