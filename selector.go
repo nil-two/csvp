@@ -4,7 +4,6 @@ import (
 	"fmt"
 	"regexp"
 	"strconv"
-	"strings"
 )
 
 type Selector interface {
@@ -116,7 +115,10 @@ func (i *Indexes) Select(recode []string) ([]string, error) {
 	return a, nil
 }
 
-var HEADER = regexp.MustCompile(`(?:[^,\\]|\\.)*`)
+var (
+	HEADER    = regexp.MustCompile(`(?:[^,\\]|\\.)*`)
+	BACKSLASH = regexp.MustCompile(`\\(.)`)
+)
 
 type Headers struct {
 	indexes []int
@@ -132,7 +134,7 @@ func NewHeaders(list string) *Headers {
 
 	headers := HEADER.FindAllString(list, -1)
 	for i := 0; i < len(headers); i++ {
-		headers[i] = strings.Replace(headers[i], `\,`, `,`, -1)
+		headers[i] = BACKSLASH.ReplaceAllString(headers[i], "$1")
 	}
 	return &Headers{
 		headers: headers,
