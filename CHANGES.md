@@ -1,8 +1,8 @@
 ### v0.9.0 - 2016-02-18
 
 - Ignore backslash in front of character in headers.
-  - "a\\b" is interpreted as "a\b".
-  - "a\bc\de" is interpreted as "abcde".
+  - `a\\b` is interpreted as `a\b`.
+  - `a\bc\de` is interpreted as `abcde`.
   - Trailing backslash also ignored.
 
 ### v0.8.1 - 2016-01-12
