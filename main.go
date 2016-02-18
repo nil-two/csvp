@@ -14,14 +14,14 @@ var (
 	name    = "csvp"
 	version = "0.8.1"
 
-	flag            = pflag.NewFlagSet(name, pflag.ContinueOnError)
-	indexesList     = flag.StringP("indexes", "i", "", "")
-	headersList     = flag.StringP("headers", "h", "", "")
-	isTSV           = flag.BoolP("tsv", "t", false, "")
-	delimiter       = flag.StringP("delimiter", "d", ",", "")
-	outputDelimiter = flag.StringP("output-delimiter", "D", "\t", "")
-	isHelp          = flag.BoolP("help", "", false, "")
-	isVersion       = flag.BoolP("version", "", false, "")
+	flagset         = pflag.NewFlagSet(name, pflag.ContinueOnError)
+	indexesList     = flagset.StringP("indexes", "i", "", "")
+	headersList     = flagset.StringP("headers", "h", "", "")
+	isTSV           = flagset.BoolP("tsv", "t", false, "")
+	delimiter       = flagset.StringP("delimiter", "d", ",", "")
+	outputDelimiter = flagset.StringP("output-delimiter", "D", "\t", "")
+	isHelp          = flagset.BoolP("help", "", false, "")
+	isVersion       = flagset.BoolP("version", "", false, "")
 )
 
 func printUsage() {
@@ -91,8 +91,8 @@ func do(c *CSVScanner) error {
 }
 
 func _main() int {
-	flag.SetOutput(ioutil.Discard)
-	if err := flag.Parse(os.Args[1:]); err != nil {
+	flagset.SetOutput(ioutil.Discard)
+	if err := flagset.Parse(os.Args[1:]); err != nil {
 		printErr(err)
 		guideToHelp()
 		return 2
@@ -120,7 +120,7 @@ func _main() int {
 		selector = NewAll()
 	}
 
-	r, err := argf.From(flag.Args())
+	r, err := argf.From(flagset.Args())
 	if err != nil {
 		printErr(err)
 		guideToHelp()
