@@ -51,7 +51,7 @@ func printVersion() {
 	fmt.Fprintln(os.Stderr, version)
 }
 
-func printErr(err error) {
+func printErr(err interface{}) {
 	fmt.Fprintf(os.Stderr, "%s: %s\n", name, err)
 }
 
@@ -109,7 +109,7 @@ func _main() int {
 	var selector Selector
 	switch {
 	case *indexesList != "" && *headersList != "":
-		printErr(fmt.Errorf("only one type of list may be specified"))
+		printErr("only one type of list may be specified")
 		guideToHelp()
 		return 2
 	case *indexesList != "":
