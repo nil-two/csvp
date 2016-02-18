@@ -59,17 +59,6 @@ func guideToHelp() {
 	fmt.Fprintf(os.Stderr, "Try '%s --help' for more information.\n", name)
 }
 
-type Option struct {
-	IndexesList     string
-	HeadersList     string
-	IsTSV           bool
-	Delimiter       string
-	OutputDelimiter string
-	IsHelp          bool
-	IsVersion       bool
-	Files           []string
-}
-
 func toDelimiter(s string) (r rune, err error) {
 	s, err = strconv.Unquote(`"` + s + `"`)
 	if err != nil {
