@@ -13,6 +13,15 @@ import (
 var (
 	name    = "csvp"
 	version = "0.8.1"
+
+	flag            = pflag.NewFlagSet(name, pflag.ContinueOnError)
+	indexesList     = flag.StringP("indexes", "i", "", "")
+	headersList     = flag.StringP("headers", "h", "", "")
+	isTSV           = flag.BoolP("tsv", "t", false, "")
+	delimiter       = flag.StringP("delimiter", "d", ",", "")
+	outputDelimiter = flag.StringP("output-delimiter", "D", "\t", "")
+	isHelp          = flag.BoolP("help", "", false, "")
+	isVersion       = flag.BoolP("version", "", false, "")
 )
 
 func printUsage() {
@@ -82,48 +91,36 @@ func do(c *CSVScanner) error {
 }
 
 func _main() int {
-	flag := pflag.NewFlagSet(name, pflag.ContinueOnError)
 	flag.SetOutput(ioutil.Discard)
-
-	opt := &Option{}
-	flag.StringVarP(&opt.IndexesList, "indexes", "i", "", "")
-	flag.StringVarP(&opt.HeadersList, "headers", "h", "", "")
-	flag.BoolVarP(&opt.IsTSV, "tsv", "t", false, "")
-	flag.StringVarP(&opt.Delimiter, "delimiter", "d", ",", "")
-	flag.StringVarP(&opt.OutputDelimiter, "output-delimiter", "D", "\t", "")
-	flag.BoolVarP(&opt.IsHelp, "help", "", false, "")
-	flag.BoolVarP(&opt.IsVersion, "version", "", false, "")
-
 	if err := flag.Parse(os.Args[1:]); err != nil {
 		printErr(err)
 		guideToHelp()
 		return 2
 	}
 	switch {
-	case opt.IsHelp:
+	case *isHelp:
 		printUsage()
 		return 0
-	case opt.IsVersion:
+	case *isVersion:
 		printVersion()
 		return 0
 	}
-	opt.Files = flag.Args()
 
 	var selector Selector
 	switch {
-	case opt.IndexesList != "" && opt.HeadersList != "":
+	case *indexesList != "" && *headersList != "":
 		printErr(fmt.Errorf("only one type of list may be specified"))
 		guideToHelp()
 		return 2
-	case opt.IndexesList != "":
-		selector = NewIndexes(opt.IndexesList)
-	case opt.HeadersList != "":
-		selector = NewHeaders(opt.HeadersList)
+	case *indexesList != "":
+		selector = NewIndexes(*indexesList)
+	case *headersList != "":
+		selector = NewHeaders(*headersList)
 	default:
 		selector = NewAll()
 	}
 
-	r, err := argf.From(opt.Files)
+	r, err := argf.From(flag.Args())
 	if err != nil {
 		printErr(err)
 		guideToHelp()
@@ -131,12 +128,12 @@ func _main() int {
 	}
 
 	c := NewCSVScanner(selector, r)
-	c.SetOutputDelimiter(opt.OutputDelimiter)
+	c.SetOutputDelimiter(*outputDelimiter)
 	switch {
-	case opt.IsTSV:
+	case *isTSV:
 		c.SetDelimiter('\t')
 	default:
-		ch, err := toDelimiter(opt.Delimiter)
+		ch, err := toDelimiter(*delimiter)
 		if err != nil {
 			printErr(err)
 			guideToHelp()
