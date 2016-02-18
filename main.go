@@ -61,27 +61,6 @@ type Option struct {
 	Files           []string
 }
 
-func parseOption(args []string) (opt *Option, err error) {
-	flag := pflag.NewFlagSet(name, pflag.ContinueOnError)
-	flag.SetOutput(ioutil.Discard)
-
-	opt = &Option{}
-	flag.StringVarP(&opt.IndexesList, "indexes", "i", "", "")
-	flag.StringVarP(&opt.HeadersList, "headers", "h", "", "")
-	flag.BoolVarP(&opt.IsTSV, "tsv", "t", false, "")
-	flag.StringVarP(&opt.Delimiter, "delimiter", "d", ",", "")
-	flag.StringVarP(&opt.OutputDelimiter, "output-delimiter", "D", "\t", "")
-	flag.BoolVarP(&opt.IsHelp, "help", "", false, "")
-	flag.BoolVarP(&opt.IsVersion, "version", "", false, "")
-
-	if err = flag.Parse(args); err != nil {
-		return nil, err
-	}
-
-	opt.Files = flag.Args()
-	return opt, nil
-}
-
 func toDelimiter(s string) (r rune, err error) {
 	s, err = strconv.Unquote(`"` + s + `"`)
 	if err != nil {
@@ -95,39 +74,6 @@ func toDelimiter(s string) (r rune, err error) {
 	return runes[0], nil
 }
 
-func newCSVScannerFromOption(opt *Option) (c *CSVScanner, err error) {
-	var selector Selector
-	switch {
-	case opt.IndexesList != "" && opt.HeadersList != "":
-		return nil, fmt.Errorf("only one type of list may be specified")
-	case opt.IndexesList != "":
-		selector = NewIndexes(opt.IndexesList)
-	case opt.HeadersList != "":
-		selector = NewHeaders(opt.HeadersList)
-	default:
-		selector = NewAll()
-	}
-
-	reader, err := argf.From(opt.Files)
-	if err != nil {
-		return nil, err
-	}
-
-	c = NewCSVScanner(selector, reader)
-	c.SetOutputDelimiter(opt.OutputDelimiter)
-	switch {
-	case opt.IsTSV:
-		c.SetDelimiter('\t')
-	default:
-		delimiter, err := toDelimiter(opt.Delimiter)
-		if err != nil {
-			return nil, err
-		}
-		c.SetDelimiter(delimiter)
-	}
-	return c, nil
-}
-
 func do(c *CSVScanner) error {
 	for c.Scan() {
 		fmt.Println(c.Text())
@@ -136,8 +82,19 @@ func do(c *CSVScanner) error {
 }
 
 func _main() int {
-	opt, err := parseOption(os.Args[1:])
-	if err != nil {
+	flag := pflag.NewFlagSet(name, pflag.ContinueOnError)
+	flag.SetOutput(ioutil.Discard)
+
+	opt := &Option{}
+	flag.StringVarP(&opt.IndexesList, "indexes", "i", "", "")
+	flag.StringVarP(&opt.HeadersList, "headers", "h", "", "")
+	flag.BoolVarP(&opt.IsTSV, "tsv", "t", false, "")
+	flag.StringVarP(&opt.Delimiter, "delimiter", "d", ",", "")
+	flag.StringVarP(&opt.OutputDelimiter, "output-delimiter", "D", "\t", "")
+	flag.BoolVarP(&opt.IsHelp, "help", "", false, "")
+	flag.BoolVarP(&opt.IsVersion, "version", "", false, "")
+
+	if err := flag.Parse(os.Args[1:]); err != nil {
 		printErr(err)
 		guideToHelp()
 		return 2
@@ -150,13 +107,44 @@ func _main() int {
 		printVersion()
 		return 0
 	}
+	opt.Files = flag.Args()
 
-	c, err := newCSVScannerFromOption(opt)
+	var selector Selector
+	switch {
+	case opt.IndexesList != "" && opt.HeadersList != "":
+		printErr(fmt.Errorf("only one type of list may be specified"))
+		guideToHelp()
+		return 2
+	case opt.IndexesList != "":
+		selector = NewIndexes(opt.IndexesList)
+	case opt.HeadersList != "":
+		selector = NewHeaders(opt.HeadersList)
+	default:
+		selector = NewAll()
+	}
+
+	r, err := argf.From(opt.Files)
 	if err != nil {
 		printErr(err)
 		guideToHelp()
 		return 2
 	}
+
+	c := NewCSVScanner(selector, r)
+	c.SetOutputDelimiter(opt.OutputDelimiter)
+	switch {
+	case opt.IsTSV:
+		c.SetDelimiter('\t')
+	default:
+		ch, err := toDelimiter(opt.Delimiter)
+		if err != nil {
+			printErr(err)
+			guideToHelp()
+			return 2
+		}
+		c.SetDelimiter(ch)
+	}
+
 	if err = do(c); err != nil {
 		printErr(err)
 		return 1
