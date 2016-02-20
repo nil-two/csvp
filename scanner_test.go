@@ -227,7 +227,7 @@ func TestScanWithDelimiter(t *testing.T) {
 		c.SetDelimiter(test.delimiter)
 
 		expect := test.dst
-		actual := make([]string, 0)
+		actual := []string{}
 		for c.Scan() {
 			actual = append(actual, c.Text())
 		}
@@ -283,7 +283,7 @@ func TestScanWithOutputDelimiter(t *testing.T) {
 		c.SetOutputDelimiter(test.outputDelimiter)
 
 		expect := test.dst
-		actual := make([]string, 0)
+		actual := []string{}
 		for c.Scan() {
 			actual = append(actual, c.Text())
 		}
