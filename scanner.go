@@ -31,6 +31,15 @@ func (c *CSVScanner) SetOutputDelimiter(s string) {
 	c.outputDelimiter = s
 }
 
+func (c *CSVScanner) InitializeReader(r io.Reader) {
+	ch := c.reader.Comma
+	c.reader = csv.NewReader(r)
+	c.reader.Comma = ch
+	c.parsedHeaders = false
+	c.err = nil
+	c.text = ""
+}
+
 func (c *CSVScanner) Err() error {
 	if c.err == io.EOF {
 		return nil
