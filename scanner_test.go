@@ -303,3 +303,39 @@ func TestScanWithOutputDelimiter(t *testing.T) {
 		}
 	}
 }
+
+func TestInitializeReader(t *testing.T) {
+	src1 := strings.NewReader(`
+a,b,c
+10,20,30
+40,50,60
+`[1:])
+	src2 := strings.NewReader(`
+a,b,c
+70,80,90
+100,110,120
+`[1:])
+
+	selector := &DummyAll{dropHeaders: true}
+	c := NewCSVScanner(selector, src1)
+
+	expect := []string{
+		"10\t20\t30",
+		"40\t50\t60",
+		"70\t80\t90",
+		"100\t110\t120",
+	}
+	actual := []string{}
+	for c.Scan() {
+		actual = append(actual, c.Text())
+	}
+	c.InitializeReader(src2)
+	for c.Scan() {
+		actual = append(actual, c.Text())
+	}
+	if !reflect.DeepEqual(actual, expect) {
+		t.Fatalf("%s\ngot: %q\nwant: %q",
+			"InitilizeReader should reset parsedHeaders",
+			actual, expect)
+	}
+}
