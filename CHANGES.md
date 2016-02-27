@@ -1,3 +1,7 @@
+### v0.10.0 - 2016-02-27
+
+- Ignore headers in all input-files if --headers specified.
+
 ### v0.9.0 - 2016-02-18
 
 - Ignore backslash in front of character in headers.
