@@ -59,7 +59,7 @@ func guideToHelp() {
 	fmt.Fprintf(os.Stderr, "Try '%s --help' for more information.\n", name)
 }
 
-func toDelimiter(s string) (r rune, err error) {
+func toDelimiter(s string) (ch rune, err error) {
 	s, err = strconv.Unquote(`"` + s + `"`)
 	if err != nil {
 		return 0, err
