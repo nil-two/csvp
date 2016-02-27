@@ -65,11 +65,11 @@ func toDelimiter(s string) (ch rune, err error) {
 		return 0, err
 	}
 
-	runes := []rune(s)
-	if len(runes) != 1 {
+	a := []rune(s)
+	if len(a) != 1 {
 		return 0, fmt.Errorf("the delimiter must be a single character")
 	}
-	return runes[0], nil
+	return a[0], nil
 }
 
 func do(c *CSVScanner) error {

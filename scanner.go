@@ -60,7 +60,7 @@ func (c *CSVScanner) Scan() bool {
 		return false
 	}
 
-	recode, err := c.reader.Read()
+	record, err := c.reader.Read()
 	if err != nil {
 		c.err = err
 		c.text = ""
@@ -68,7 +68,7 @@ func (c *CSVScanner) Scan() bool {
 	}
 
 	if !c.parsedHeaders {
-		err = c.selector.ParseHeaders(recode)
+		err = c.selector.ParseHeaders(record)
 		if err != nil {
 			c.err = err
 			c.text = ""
@@ -81,13 +81,13 @@ func (c *CSVScanner) Scan() bool {
 		}
 	}
 
-	recode, err = c.selector.Select(recode)
+	record, err = c.selector.Select(record)
 	if err != nil {
 		c.err = err
 		c.text = ""
 		return false
 	}
-	c.text = strings.Join(recode, c.outputDelimiter)
+	c.text = strings.Join(record, c.outputDelimiter)
 
 	return true
 }

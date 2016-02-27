@@ -10,7 +10,7 @@ import (
 type Selector interface {
 	DropHeaders() bool
 	ParseHeaders(headers []string) error
-	Select(recode []string) ([]string, error)
+	Select(record []string) ([]string, error)
 }
 
 type All struct {
@@ -28,14 +28,14 @@ func (a *All) ParseHeaders(headers []string) error {
 	return nil
 }
 
-func (a *All) Select(recode []string) ([]string, error) {
-	return recode, nil
+func (a *All) Select(record []string) ([]string, error) {
+	return record, nil
 }
 
 var (
-	INDEXES = regexp.MustCompile(`^(?:\d*-\d*|\d+)(?:,(?:\d*-\d*|\d+))*$`)
-	INDEX   = regexp.MustCompile(`(?:\d*-\d*|\d+)`)
-	RANGE   = regexp.MustCompile(`^(\d*)-(\d*)$`)
+	exprIndexes = regexp.MustCompile(`^(?:\d*-\d*|\d+)(?:,(?:\d*-\d*|\d+))*$`)
+	exprIndex   = regexp.MustCompile(`(?:\d*-\d*|\d+)`)
+	exprRange   = regexp.MustCompile(`^(\d*)-(\d*)$`)
 )
 
 func toIndex(s string) (index int, err error) {
@@ -69,17 +69,17 @@ func (i *Indexes) ParseHeaders(headers []string) error {
 		i.indexes = make([]int, 0)
 		return nil
 	}
-	if !INDEXES.MatchString(i.list) {
+	if !exprIndexes.MatchString(i.list) {
 		return fmt.Errorf("%q: invalid syntax", i.list)
 	}
 
 	i.indexes = make([]int, 0)
-	for _, rawIndex := range INDEX.FindAllString(i.list, -1) {
+	for _, rawIndex := range exprIndex.FindAllString(i.list, -1) {
 		var err error
 		switch {
-		case RANGE.MatchString(rawIndex):
+		case exprRange.MatchString(rawIndex):
 			first, last := 1, len(headers)
-			rawRange := RANGE.FindStringSubmatch(rawIndex)
+			rawRange := exprRange.FindStringSubmatch(rawIndex)
 			if rawRange[1] != "" {
 				first, err = toIndex(rawRange[1])
 				if err != nil {
@@ -106,20 +106,20 @@ func (i *Indexes) ParseHeaders(headers []string) error {
 	return nil
 }
 
-func (i *Indexes) Select(recode []string) ([]string, error) {
+func (i *Indexes) Select(record []string) ([]string, error) {
 	a := make([]string, len(i.indexes))
 	for j, index := range i.indexes {
-		if index >= 0 && index < len(recode) {
-			a[j] = recode[index]
+		if index >= 0 && index < len(record) {
+			a[j] = record[index]
 		}
 	}
 	return a, nil
 }
 
 var (
-	HEADER    = regexp.MustCompile(`(?:[^,\\]|\\.)*`)
-	BACKSLASH = regexp.MustCompile(`\\(.)`)
-	TRAILING  = regexp.MustCompile(`\\+$`)
+	exprHeader    = regexp.MustCompile(`(?:[^,\\]|\\.)*`)
+	exprBackslash = regexp.MustCompile(`\\(.)`)
+	exprTrailing  = regexp.MustCompile(`\\+$`)
 )
 
 type Headers struct {
@@ -128,7 +128,7 @@ type Headers struct {
 }
 
 func NewHeaders(list string) *Headers {
-	list = TRAILING.ReplaceAllStringFunc(list, func(s string) string {
+	list = exprTrailing.ReplaceAllStringFunc(list, func(s string) string {
 		return strings.Repeat(`\\`, len(s)/2)
 	})
 	if list == "" {
@@ -137,9 +137,9 @@ func NewHeaders(list string) *Headers {
 		}
 	}
 
-	headers := HEADER.FindAllString(list, -1)
+	headers := exprHeader.FindAllString(list, -1)
 	for i := 0; i < len(headers); i++ {
-		headers[i] = BACKSLASH.ReplaceAllString(headers[i], "$1")
+		headers[i] = exprBackslash.ReplaceAllString(headers[i], "$1")
 	}
 	return &Headers{
 		headers: headers,
@@ -170,11 +170,11 @@ func (h *Headers) ParseHeaders(headers []string) error {
 	return nil
 }
 
-func (h *Headers) Select(recode []string) ([]string, error) {
+func (h *Headers) Select(record []string) ([]string, error) {
 	a := make([]string, len(h.indexes))
 	for i, index := range h.indexes {
 		if index != -1 {
-			a[i] = recode[index]
+			a[i] = record[index]
 		}
 	}
 	return a, nil
