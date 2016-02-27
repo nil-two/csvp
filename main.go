@@ -7,7 +7,6 @@ import (
 	"strconv"
 
 	"github.com/ogier/pflag"
-	"github.com/yuya-takeyama/argf"
 )
 
 var (
@@ -109,14 +108,7 @@ func _main() int {
 		selector = NewAll()
 	}
 
-	r, err := argf.From(flagset.Args())
-	if err != nil {
-		printErr(err)
-		guideToHelp()
-		return 2
-	}
-
-	c := NewCSVScanner(selector, r)
+	c := NewCSVScanner(selector, nil)
 	c.SetOutputDelimiter(*outputDelimiter)
 	switch {
 	case *isTSV:
@@ -131,9 +123,19 @@ func _main() int {
 		c.SetDelimiter(ch)
 	}
 
-	if err = do(c); err != nil {
-		printErr(err)
-		return 1
+	for _, file := range flagset.Args() {
+		f, err := os.Open(file)
+		if err != nil {
+			printErr(err)
+			return 1
+		}
+		defer f.Close()
+
+		c.InitializeReader(f)
+		if err := do(c); err != nil {
+			printErr(err)
+			return 1
+		}
 	}
 	return 0
 }
