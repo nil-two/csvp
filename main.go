@@ -85,11 +85,11 @@ func _main() int {
 		guideToHelp()
 		return 2
 	}
-	switch {
-	case *isHelp:
+	if *isHelp {
 		printUsage()
 		return 0
-	case *isVersion:
+	}
+	if *isVersion {
 		printVersion()
 		return 0
 	}
