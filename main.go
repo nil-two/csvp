@@ -12,7 +12,7 @@ import (
 
 var (
 	name    = "csvp"
-	version = "0.10.0"
+	version = "0.10.1"
 
 	flagset         = pflag.NewFlagSet(name, pflag.ContinueOnError)
 	indexesList     = flagset.StringP("indexes", "i", "", "")
