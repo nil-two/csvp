@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"io"
 	"io/ioutil"
 	"os"
 	"strconv"
@@ -123,15 +124,25 @@ func _main() int {
 		c.SetDelimiter(ch)
 	}
 
-	for _, file := range flagset.Args() {
-		f, err := os.Open(file)
-		if err != nil {
-			printErr(err)
-			return 1
-		}
-		defer f.Close()
+	var rs []io.Reader
+	if flagset.NArg() == 0 {
+		rs = append(rs, os.Stdin)
+	} else {
+		for _, path := range flagset.Args() {
+			f, err := os.Open(path)
+			if err != nil {
+				printErr(err)
+				guideToHelp()
+				return 2
+			}
+			defer f.Close()
 
-		c.InitializeReader(f)
+			rs = append(rs, f)
+		}
+	}
+
+	for _, r := range rs {
+		c.InitializeReader(r)
 		if err := do(c); err != nil {
 			printErr(err)
 			return 1
