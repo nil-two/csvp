@@ -1,3 +1,7 @@
+### v0.10.1 - 2016-04-27
+
+- Read stdin if there is no FILE.
+
 ### v0.10.0 - 2016-02-27
 
 - Ignore headers in all input-files if --headers specified.
