@@ -62,7 +62,7 @@ Options
 
 ### --help
 
-Display the usage and exit.
+Display a help message.
 
 ### --version
 
