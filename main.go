@@ -11,8 +11,8 @@ import (
 )
 
 var (
-	cmdName = "csvp"
-	version = "0.10.1"
+	cmdName    = "csvp"
+	cmdVersion = "0.10.1"
 
 	flagset         = pflag.NewFlagSet(cmdName, pflag.ContinueOnError)
 	indexesList     = flagset.StringP("indexes", "i", "", "")
@@ -48,7 +48,7 @@ Options:
 }
 
 func printVersion() {
-	fmt.Fprintln(os.Stderr, version)
+	fmt.Fprintln(os.Stderr, cmdVersion)
 }
 
 func printErr(err interface{}) {
