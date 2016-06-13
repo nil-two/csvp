@@ -11,10 +11,10 @@ import (
 )
 
 var (
-	name    = "csvp"
+	cmdName = "csvp"
 	version = "0.10.1"
 
-	flagset         = pflag.NewFlagSet(name, pflag.ContinueOnError)
+	flagset         = pflag.NewFlagSet(cmdName, pflag.ContinueOnError)
 	indexesList     = flagset.StringP("indexes", "i", "", "")
 	headersList     = flagset.StringP("headers", "h", "", "")
 	isTSV           = flagset.BoolP("tsv", "t", false, "")
@@ -44,7 +44,7 @@ Options:
                  display this help text and exit
   --version
                  output version information and exit
-`[1:], name)
+`[1:], cmdName)
 }
 
 func printVersion() {
@@ -52,11 +52,11 @@ func printVersion() {
 }
 
 func printErr(err interface{}) {
-	fmt.Fprintf(os.Stderr, "%s: %s\n", name, err)
+	fmt.Fprintf(os.Stderr, "%s: %s\n", cmdName, err)
 }
 
 func guideToHelp() {
-	fmt.Fprintf(os.Stderr, "Try '%s --help' for more information.\n", name)
+	fmt.Fprintf(os.Stderr, "Try '%s --help' for more information.\n", cmdName)
 }
 
 func toDelimiter(s string) (ch rune, err error) {
