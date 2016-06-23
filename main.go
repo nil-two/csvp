@@ -72,11 +72,19 @@ func toDelimiter(s string) (ch rune, err error) {
 	return a[0], nil
 }
 
-func do(c *CSVScanner) error {
-	for c.Scan() {
-		fmt.Println(c.Text())
+func do(c *CSVScanner, rs []io.Reader) error {
+	for _, r := range rs {
+		c.InitializeReader(r)
+
+		for c.Scan() {
+			fmt.Println(c.Text())
+		}
+
+		if err := c.Err(); err != nil {
+			return err
+		}
 	}
-	return c.Err()
+	return nil
 }
 
 func _main() int {
@@ -141,12 +149,9 @@ func _main() int {
 		}
 	}
 
-	for _, r := range rs {
-		c.InitializeReader(r)
-		if err := do(c); err != nil {
-			printErr(err)
-			return 1
-		}
+	if err := do(c, rs); err != nil {
+		printErr(err)
+		return 1
 	}
 	return 0
 }
