@@ -1,8 +1,6 @@
 csvp
 ====
 
-[![Build Status](https://travis-ci.org/kusabashira/csvp.svg?branch=master)](https://travis-ci.org/kusabashira/csvp)
-
 Print selected parts of CSV from each FILE to standard output.
 
 ```
@@ -49,12 +47,12 @@ Installation
 
 ### compiled binary
 
-See [releases](https://github.com/kusabashira/csvp/releases).
+See [releases](https://github.com/nil2nekoni/csvp/releases).
 
 ### go get
 
 ```
-go get github.com/kusabashira/csvp
+go get github.com/nil2nekoni/csvp
 ```
 
 Options
@@ -191,4 +189,4 @@ MIT License
 Author
 ------
 
-kusabashira <kusabashira227@gmail.com>
+nil2 <nil2@nil2.org>
