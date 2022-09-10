@@ -47,12 +47,12 @@ Installation
 
 ### compiled binary
 
-See [releases](https://github.com/nil2nekoni/csvp/releases).
+See [releases](https://github.com/nil-two/csvp/releases).
 
 ### go get
 
 ```
-go get github.com/nil2nekoni/csvp
+go get github.com/nil-two/csvp
 ```
 
 Options
